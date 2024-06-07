@@ -15,6 +15,7 @@ class client
         bool is_authenticated;
         bool is_registered;
     public :
+        client(pollfd client_pfd);
         client(pollfd client_pfd, std::string nickname, std::string username);
         ~client();
         void set_nickname(std::string nickname);
@@ -24,6 +25,11 @@ class client
         void set_registered(bool is_registered);
         pollfd get_client_pfd();
         void set_client_pfd(pollfd client_pfd);
+
+
+
+
+        void print_client();
         
 };
 

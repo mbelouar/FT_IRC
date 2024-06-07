@@ -50,3 +50,23 @@ void client::set_client_pfd(pollfd client_pfd)
     this->client_pfd = client_pfd;
 }
 
+
+
+client::client(pollfd client_pfd)
+{
+    std::cout << "new client has been created and his fd is : " << client_pfd.fd << std::endl;
+    this->client_pfd = client_pfd;
+    this->is_authenticated = false;
+    this->is_registered = false;
+}
+
+
+
+void client::print_client()
+{
+    std::cout << "client with nickname : " << this->nickname << std::endl;
+    std::cout << " and username : " << this->username << std::endl;
+    std::cout << " and realname : " << this->realname << std::endl;
+    std::cout << " and is_authenticated : " << this->is_authenticated << std::endl;
+    std::cout << " and is_registered : " << this->is_registered << std::endl;
+}
