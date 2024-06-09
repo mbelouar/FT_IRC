@@ -12,7 +12,8 @@ client::client(pollfd client_pfd, std::string nickname, std::string username)
 
 client::~client()
 {
-    std::cout << "client with nickname " << this->nickname << " is destroyed" << std::endl;
+//     std::cout << "client with nickname " << this->nickname << " is destroyed" << std::endl;
+
 }
 
 void client::set_nickname(std::string nickname)
@@ -30,10 +31,19 @@ void client::set_realname(std::string realname)
     this->realname = realname;
 }
 
-void client::set_authenticated(bool is_authenticated)
-{
-    this->is_authenticated = is_authenticated;
-}
+// bool client::set_authenticated()
+// {
+//     // this->is_authenticated = is_authenticated;
+//     if (this->is_registered == true)
+//     {
+//         return (true);
+//     }else
+//     {
+        
+//     }
+    
+
+// }
 
 void client::set_registered(bool is_registered)
 {
@@ -54,19 +64,20 @@ void client::set_client_pfd(pollfd client_pfd)
 
 client::client(pollfd client_pfd)
 {
-    std::cout << "new client has been created and his fd is : " << client_pfd.fd << std::endl;
     this->client_pfd = client_pfd;
     this->is_authenticated = false;
     this->is_registered = false;
 }
 
-
-
-void client::print_client()
+void client::set_massage(std::string massage)
 {
-    std::cout << "client with nickname : " << this->nickname << std::endl;
-    std::cout << " and username : " << this->username << std::endl;
-    std::cout << " and realname : " << this->realname << std::endl;
-    std::cout << " and is_authenticated : " << this->is_authenticated << std::endl;
-    std::cout << " and is_registered : " << this->is_registered << std::endl;
+    this->massage = this->massage + massage;
 }
+
+void client::print_massage()
+{
+    std::cout << this->massage << std::endl;
+}
+
+
+

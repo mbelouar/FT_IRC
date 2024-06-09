@@ -12,6 +12,7 @@ int main(int argc, char *argv[])
     }
 
 Server irc_server("0.0.0.0", argv[1]);
+irc_server.setsockopt();
 irc_server.bind_socket();
 irc_server.listen_socket();
 
@@ -68,19 +69,39 @@ while (1)
                 if (r > 0)
                 {
                     buffer[r] = '\0';
+                    
                     // std::cout << buffer;
-                    // clients[i].print_client();
-                    unsigned int j = 0;
-                    while ( j < fds.size())
+                    unsigned int l = 0;
+                    while (l < clients.size())
                     {
-                        if(fds[j].fd != irc_server.get_sockfd())
+                        if ((clients[l].get_client_pfd().fd == fds[i].fd))
                         {
-                            // std::cout << "this massage is send from client : " << fds[i].fd << " to client : " << fds[j].fd << std::endl;
-                            send(fds[j].fd, buffer, r, 0);
-                            // std::cout << "the size of the clients vector is  : " << clients.size() << std::endl;
+                            if (buffer[0] != ':')
+                            {
+                            //    std::cout << "client found" << std::endl;
+                                clients[l].set_massage(buffer);
+                                buffer[0] = '\0';
+                            }else
+                            {
+                                std::cout << "---------------------------------" << std::endl;
+                                std::cout << "client : " << l << std::endl;
+                                clients[l].print_massage();
+                                std::cout << "---------------------------------" << std::endl;
+                            }
                         }
-                        j++;
+                        
+
+                        l++;
                     }
+                    // unsigned int j = 0;
+                    // while ( j < fds.size())
+                    // {
+                    //     if(fds[j].fd != irc_server.get_sockfd())
+                    //     {
+                    //         send(fds[j].fd, buffer, r, 0);
+                    //     }
+                    //     j++;
+                    // }
                 }
             }
         }

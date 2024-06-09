@@ -18,6 +18,7 @@ class Server
     public :
         Server(std::string ip, std::string port);
         void bind_socket();
+        void setsockopt();
         void listen_socket();
         std::vector<pollfd> get_fds();
         int get_sockfd();
