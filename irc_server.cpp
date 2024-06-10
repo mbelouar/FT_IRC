@@ -60,6 +60,8 @@ while (1)
                     fds.push_back(client_pfd);
                     
                     clients.push_back(client(client_pfd, argv[2]));
+
+                    
                 }
             }
             else
