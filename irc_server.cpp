@@ -59,11 +59,12 @@ while (1)
                     client_pfd.events = POLLIN;
                     fds.push_back(client_pfd);
                     
-                    clients.push_back(client(client_pfd));
+                    clients.push_back(client(client_pfd, argv[2]));
                 }
             }
             else
             {
+                
                 char buffer[1024];
                 int r = recv(fds[i].fd, buffer, sizeof(buffer), 0);
                 if (r > 0)
@@ -76,6 +77,11 @@ while (1)
                     {
                         if ((clients[l].get_client_pfd().fd == fds[i].fd))
                         {
+                            if (clients[l].set_authenticated() == true)
+                            {
+                                std::cout << "client : " << l << " authenticated" << std::endl;
+                            }
+                            
                             if (buffer[0] != ':')
                             {
                             //    std::cout << "client found" << std::endl;
