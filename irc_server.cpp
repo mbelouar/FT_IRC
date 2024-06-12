@@ -6,7 +6,7 @@
 int main()
 {
 
-Server irc_server("10.11.2.9", "8080");
+Server irc_server("localhost", "8080");
 irc_server.bind_socket();
 irc_server.listen_socket();
 
