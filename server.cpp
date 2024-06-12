@@ -42,6 +42,16 @@ void Server::bind_socket()
     }
 }
 
+void Server::setsockopt()
+{
+    int opt = 1;
+int r = ::setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+    if (r == -1)
+    {
+        std::cout << "error in setsockopt function" << std::endl;
+    }
+}
+
 void Server::listen_socket()
 {
     int r = listen(sockfd, 1000);

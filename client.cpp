@@ -1,18 +1,18 @@
 #include "client.hpp"
 
-client::client(pollfd client_pfd, std::string nickname, std::string username)
+client::client(pollfd client_pfd, std::string password)
 {
     this->client_pfd = client_pfd;
-    this->nickname = nickname;
-    this->username = username;
     this->is_authenticated = false;
     this->is_registered = false;
+    this->password = password;
 }
 
 
 client::~client()
 {
-    std::cout << "client with nickname " << this->nickname << " is destroyed" << std::endl;
+//     std::cout << "client with nickname " << this->nickname << " is destroyed" << std::endl;
+
 }
 
 void client::set_nickname(std::string nickname)
@@ -30,9 +30,41 @@ void client::set_realname(std::string realname)
     this->realname = realname;
 }
 
-void client::set_authenticated(bool is_authenticated)
+bool client::set_authenticated()
 {
-    this->is_authenticated = is_authenticated;
+    std::string line;
+    if (this->is_registered == true)
+    {
+        return (true);
+    }else
+    {
+        if (this->massage.find("NICK") != std::string::npos)
+        {
+            line = this->massage.substr(this->massage.find("NICK"), this->massage.find("\n"));
+            this->nickname = line.substr(5, line.find("\n"));
+        }
+        if (this->massage.find("USER") != std::string::npos)
+        {
+            line = this->massage.substr(this->massage.find("USER"), this->massage.find("\n"));
+            this->username = line.substr(5, line.find("\n"));
+        }
+        if (this->massage.find("REALNAME") != std::string::npos)
+        {
+            line = this->massage.substr(this->massage.find("REALNAME"), this->massage.find("\n"));
+            this->realname = line.substr(9, line.find("\n"));
+        }
+        if (this->nickname != "" && this->username != "" && this->realname != "")
+        {
+            this->is_registered = true;
+            return (true);
+        }else
+        {
+            return (false);
+        }
+
+    }
+
+     return (false);      
 }
 
 void client::set_registered(bool is_registered)
@@ -49,4 +81,20 @@ void client::set_client_pfd(pollfd client_pfd)
 {
     this->client_pfd = client_pfd;
 }
+
+
+
+
+
+void client::set_massage(std::string massage)
+{
+    this->massage = this->massage + massage;
+}
+
+void client::print_massage()
+{
+    std::cout << this->massage << std::endl;
+}
+
+
 

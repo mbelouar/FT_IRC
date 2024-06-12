@@ -3,10 +3,16 @@
 #include "client.hpp"
 
 
-int main()
+int main(int argc, char *argv[])
 {
+    if(argc != 3)
+    {
+        std::cout << "Usage: ./irc_server <port> <password>" << std::endl;
+        return (1);
+    }
 
-Server irc_server("localhost", "8080");
+Server irc_server("0.0.0.0", argv[1]);
+irc_server.setsockopt();
 irc_server.bind_socket();
 irc_server.listen_socket();
 
@@ -14,13 +20,15 @@ irc_server.listen_socket();
 
 std::vector<pollfd> fds;
 
+std::vector<client> clients;
+
 fds = irc_server.get_fds();
 
-std::cout << "server is running :: fds : " << fds.front().fd << std::endl;
+// std::cout << "server is running :: fds : " << fds.front().fd << std::endl;
 
 while (1)
 {
-    int r = poll(fds.data(), fds.size(), -1);
+    int r = poll(&fds[0], fds.size(), -1);
     if (r == -1)
     {
         std::cout << "error in poll function" << std::endl;  
@@ -44,34 +52,62 @@ while (1)
                 }
                 else
                 {
-                    std::cout << "new client connected " << inet_ntoa(clientaddr.sin_addr) << std::endl;
+                    // std::cout << "new client connected " << inet_ntoa(clientaddr.sin_addr) << std::endl;
                     pollfd client_pfd;
+                    
                     client_pfd.fd = clientfd;
                     client_pfd.events = POLLIN;
                     fds.push_back(client_pfd);
+                    
+                    clients.push_back(client(client_pfd, argv[2]));
                 }
             }
             else
             {
+                
                 char buffer[1024];
                 int r = recv(fds[i].fd, buffer, sizeof(buffer), 0);
                 if (r > 0)
                 {
                     buffer[r] = '\0';
-                    std::cout << buffer;
-                    // send(fds[i].fd, "your message has been received\n", strlen("your message has been received\n"), 0);
-                    // send(fds[i].fd, buffer, r, 0);
-                    unsigned int j = 0;
-                    while ( j < fds.size())
-                    {
-                        if(fds[j].fd != irc_server.get_sockfd())
-                        {
-                            std::cout << "this massage is send from client : " << fds[i].fd << " to client : " << fds[j].fd << std::endl;
-                            send(fds[j].fd, buffer, r, 0);
-                        }
-                        j++;
-                    }
                     
+                    // std::cout << buffer;
+                    unsigned int l = 0;
+                    while (l < clients.size())
+                    {
+                        if ((clients[l].get_client_pfd().fd == fds[i].fd))
+                        {
+                            if (clients[l].set_authenticated() == true)
+                            {
+                                std::cout << "client : " << l << " authenticated" << std::endl;
+                            }
+                            
+                            if (buffer[0] != ':')
+                            {
+                            //    std::cout << "client found" << std::endl;
+                                clients[l].set_massage(buffer);
+                                buffer[0] = '\0';
+                            }else
+                            {
+                                std::cout << "---------------------------------" << std::endl;
+                                std::cout << "client : " << l << std::endl;
+                                clients[l].print_massage();
+                                std::cout << "---------------------------------" << std::endl;
+                            }
+                        }
+                        
+
+                        l++;
+                    }
+                    // unsigned int j = 0;
+                    // while ( j < fds.size())
+                    // {
+                    //     if(fds[j].fd != irc_server.get_sockfd())
+                    //     {
+                    //         send(fds[j].fd, buffer, r, 0);
+                    //     }
+                    //     j++;
+                    // }
                 }
             }
         }
