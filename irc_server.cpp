@@ -60,8 +60,6 @@ while (1)
                     fds.push_back(client_pfd);
                     
                     clients.push_back(client(client_pfd, argv[2]));
-
-                    
                 }
             }
             else
@@ -91,9 +89,13 @@ while (1)
                                 buffer[0] = '\0';
                             }else
                             {
+                                // std::cout << "---------------------------------" << std::endl;
+                                // std::cout << "client : " << l << std::endl;
+                                // clients[l].print_massage();
+                                // std::cout << "---------------------------------" << std::endl;
+
                                 std::cout << "---------------------------------" << std::endl;
-                                std::cout << "client : " << l << std::endl;
-                                clients[l].print_massage();
+                                clients[l].print_client();
                                 std::cout << "---------------------------------" << std::endl;
                             }
                         }

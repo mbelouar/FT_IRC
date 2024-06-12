@@ -1,5 +1,6 @@
 #include "client.hpp"
 
+
 client::client(pollfd client_pfd, std::string password)
 {
     this->client_pfd = client_pfd;
@@ -29,38 +30,57 @@ void client::set_realname(std::string realname)
 {
     this->realname = realname;
 }
+std::vector<std::string> buffer_to_line(std::string buffer, std::string siparator)
+{
+    std::vector<std::string> lines;
+    std::string line;
+    std::istringstream stm(buffer);
+    while (std::getline(stm, line))
+    {
+        size_t found = line.find_first_of(siparator);
+
+        if (found != std::string::npos)
+        {
+            line = line.substr(0, found);
+        }
+        lines.push_back(line);
+    }
+    return lines;
+}
+
+
+
+
 
 bool client::set_authenticated()
 {
     std::string line;
-    if (this->is_registered == true)
+    if (this->is_authenticated == true)
     {
+        std::cout << this->nickname << " is authenticated" << std::endl;
         return (true);
     }else
     {
-        if (this->massage.find("NICK") != std::string::npos)
+        std::vector<std::string> lines = buffer_to_line(this->massage, "\r\n");
+        std::cout << this->massage << std::endl;
+        this->nickname = "dddddd";
+
+        std::cout << "---------------vvv--------------------" << std::endl;
+        std::cout << "the size of lines : " << lines.size() << std::endl;
+        for (unsigned int i = 0; i < lines.size(); i++)
         {
-            line = this->massage.substr(this->massage.find("NICK"), this->massage.find("\n"));
-            this->nickname = line.substr(5, line.find("\n"));
+           std::cout << lines[i] << std::endl;
+          
         }
-        if (this->massage.find("USER") != std::string::npos)
-        {
-            line = this->massage.substr(this->massage.find("USER"), this->massage.find("\n"));
-            this->username = line.substr(5, line.find("\n"));
-        }
-        if (this->massage.find("REALNAME") != std::string::npos)
-        {
-            line = this->massage.substr(this->massage.find("REALNAME"), this->massage.find("\n"));
-            this->realname = line.substr(9, line.find("\n"));
-        }
-        if (this->nickname != "" && this->username != "" && this->realname != "")
-        {
-            this->is_registered = true;
-            return (true);
-        }else
-        {
-            return (false);
-        }
+
+        std::cout << "---------------vvv--------------------" << std::endl;
+
+
+
+
+
+
+
 
     }
 
@@ -94,6 +114,14 @@ void client::set_massage(std::string massage)
 void client::print_massage()
 {
     std::cout << this->massage << std::endl;
+}
+
+void client::print_client()
+{
+    std::cout << "nickname : " << this->nickname << std::endl;
+    std::cout << "username : " << this->username << std::endl;
+    std::cout << "realname : " << this->realname << std::endl;
+    std::cout << "password sabmited : " << this->sabmit_password << std::endl;
 }
 
 

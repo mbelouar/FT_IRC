@@ -3,7 +3,8 @@
 
 #include <iostream>
 #include <poll.h>
-
+#include <vector>
+#include <sstream>
 class client
 {
     private :
@@ -13,6 +14,7 @@ class client
         std::string username;
         std::string realname;
         std::string password;
+        std::string sabmit_password;
 
         bool is_authenticated;
         bool is_registered;
@@ -30,10 +32,11 @@ class client
         void set_client_pfd(pollfd client_pfd);
         void set_massage(std::string massage);
         void print_massage();
+        void print_client();
 
 };
 
-
+std::vector<std::string> buffer_to_line(std::string buffer);
 
 #endif
 
