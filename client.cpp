@@ -7,6 +7,7 @@ client::client(pollfd client_pfd, std::string password)
     this->is_authenticated = false;
     this->is_registered = false;
     this->password = password;
+    this->index = 0;
 }
 
 
@@ -60,20 +61,40 @@ bool client::set_authenticated()
         std::cout << this->nickname << " is authenticated" << std::endl;
         return (true);
     }else
-    {
-        std::vector<std::string> lines = buffer_to_line(this->massage, "\r\n");
+    { 
         std::cout << this->massage << std::endl;
-        this->nickname = "dddddd";
+        // std::vector<std::string> lines = buffer_to_line(this->massage, "\r\n");
+       
 
-        std::cout << "---------------vvv--------------------" << std::endl;
-        std::cout << "the size of lines : " << lines.size() << std::endl;
-        for (unsigned int i = 0; i < lines.size(); i++)
-        {
-           std::cout << lines[i] << std::endl;
-          
-        }
+        // std::cout << "---------------vvv--------------------" << std::endl;
+        // std::cout << "the size of lines : " << lines.size() << std::endl;
+        // for (unsigned int i = 0; i < lines.size(); i++)
+        // {
+        //    std::cout << lines[i] << std::endl;
+        //       if (lines[i].find("NICK") != std::string::npos)
+        //       {
+        //         std::string nickname = lines[i].substr(5, lines[i].size());
+        //         this->set_nickname(nickname);
+        //       }
+        //         if (lines[i].find("USER") != std::string::npos)
+        //         {
+        //             std::string username = lines[i].substr(5, lines[i].size());
+        //             this->set_username(username);
+        //         }
 
-        std::cout << "---------------vvv--------------------" << std::endl;
+        //         if (lines[i].find("PASS") != std::string::npos)
+        //         {
+        //             std::string password = lines[i].substr(5, lines[i].size());
+        //             this->sabmit_password = password;
+        //             if (this->password == password)
+        //             {
+        //                 this->is_authenticated = true;
+        //                 this->password = "";
+        //             }
+        //         }
+        // }
+
+        // std::cout << "---------------vvv--------------------" << std::endl;
 
 
 
@@ -108,12 +129,15 @@ void client::set_client_pfd(pollfd client_pfd)
 
 void client::set_massage(std::string massage)
 {
-    this->massage = this->massage + massage;
+    this->massage = massage;
 }
 
 void client::print_massage()
 {
-    std::cout << this->massage << std::endl;
+    this->index++;
+    std::cout << "--------------" << "the cleint " << this->client_pfd.fd << " : " << this->index << " : print massage method start ----------------" << std::endl;
+    std::cout << this->massage;
+    std::cout << "--------------print massage method end----------------" << std::endl;
 }
 
 void client::print_client()

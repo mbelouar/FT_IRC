@@ -19,6 +19,7 @@ class client
         bool is_authenticated;
         bool is_registered;
         std::string massage;
+        int index;
 
     public :
         client(pollfd client_pfd, std::string password);

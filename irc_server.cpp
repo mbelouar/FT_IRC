@@ -77,27 +77,29 @@ while (1)
                     {
                         if ((clients[l].get_client_pfd().fd == fds[i].fd))
                         {
-                            if (clients[l].set_authenticated() == true)
-                            {
-                                std::cout << "client : " << l << " authenticated" << std::endl;
-                            }
+                            // std::cout << buffer << std::endl;
+                            // if (clients[l].set_authenticated() == true)
+                            // {
+                            //     std::cout << "client : " << l << " authenticated" << std::endl;
+                            // }
                             
-                            if (buffer[0] != ':')
-                            {
-                            //    std::cout << "client found" << std::endl;
+                            // if (buffer[0] != ':')
+                            // {
+                            // //    std::cout << "client found" << std::endl;
                                 clients[l].set_massage(buffer);
-                                buffer[0] = '\0';
-                            }else
-                            {
+                            //     memset(buffer, 0, sizeof(buffer));
+                            //     buffer[0] = '\0';
+                            // }else
+                            // {
                                 // std::cout << "---------------------------------" << std::endl;
                                 // std::cout << "client : " << l << std::endl;
-                                // clients[l].print_massage();
+                                clients[l].print_massage();
                                 // std::cout << "---------------------------------" << std::endl;
 
-                                std::cout << "---------------------------------" << std::endl;
-                                clients[l].print_client();
-                                std::cout << "---------------------------------" << std::endl;
-                            }
+                                // std::cout << "---------------------------------" << std::endl;
+                                // clients[l].print_client();
+                                // std::cout << "---------------------------------" << std::endl;
+                            // }
                         }
                         
 
