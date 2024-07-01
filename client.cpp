@@ -43,8 +43,9 @@ std::vector<std::string> buffer_to_line(std::string buffer, std::string siparato
         if (found != std::string::npos)
         {
             line = line.substr(0, found);
+            lines.push_back(line);
         }
-        lines.push_back(line);
+        
     }
     return lines;
 }
@@ -62,39 +63,49 @@ bool client::set_authenticated()
         return (true);
     }else
     { 
-        std::cout << this->massage << std::endl;
-        // std::vector<std::string> lines = buffer_to_line(this->massage, "\r\n");
-       
+        
+        std::vector<std::string> lines = buffer_to_line(this->massage, "\r\n");
 
-        // std::cout << "---------------vvv--------------------" << std::endl;
-        // std::cout << "the size of lines : " << lines.size() << std::endl;
-        // for (unsigned int i = 0; i < lines.size(); i++)
-        // {
+        
+   
+
+        std::cout << "---------------vvv--------------------" << std::endl;
+        std::cout << "the size of lines : " << lines.size() << std::endl;
+        for (unsigned int i = 0; i < lines.size(); i++)
+        {
         //    std::cout << lines[i] << std::endl;
-        //       if (lines[i].find("NICK") != std::string::npos)
-        //       {
-        //         std::string nickname = lines[i].substr(5, lines[i].size());
-        //         this->set_nickname(nickname);
-        //       }
-        //         if (lines[i].find("USER") != std::string::npos)
-        //         {
-        //             std::string username = lines[i].substr(5, lines[i].size());
-        //             this->set_username(username);
-        //         }
+              if (lines[i].find("NICK") != std::string::npos)
+              {
+                std::string nickname = lines[i].substr(5, lines[i].size());
+                this->set_nickname(nickname);
+              }
+                if (lines[i].find("USER") != std::string::npos)
+                {
+                    std::string username = lines[i].substr(5, lines[i].size());
+                    this->set_username(username);
+                }
 
-        //         if (lines[i].find("PASS") != std::string::npos)
-        //         {
-        //             std::string password = lines[i].substr(5, lines[i].size());
-        //             this->sabmit_password = password;
-        //             if (this->password == password)
-        //             {
-        //                 this->is_authenticated = true;
-        //                 this->password = "";
-        //             }
-        //         }
-        // }
+                if (lines[i].find("PASS") != std::string::npos)
+                {
+                    std::string password = lines[i].substr(5, lines[i].size());
+                    this->sabmit_password = password;
+                    if (this->password == password)
+                    {
+                        this->is_authenticated = true;
+                        this->password = "";
+                    }
+                }
 
-        // std::cout << "---------------vvv--------------------" << std::endl;
+                
+        }
+                if (this->nickname.size() > 0 && this->username.size() > 0)
+                {
+                    this->is_authenticated = true;
+                    return (true);
+                }
+        print_client();
+
+        std::cout << "---------------vvv--------------------" << std::endl;
 
 
 
@@ -129,7 +140,7 @@ void client::set_client_pfd(pollfd client_pfd)
 
 void client::set_massage(std::string massage)
 {
-    this->massage = massage;
+    this->massage = this->massage + massage;
 }
 
 void client::print_massage()
@@ -146,6 +157,7 @@ void client::print_client()
     std::cout << "username : " << this->username << std::endl;
     std::cout << "realname : " << this->realname << std::endl;
     std::cout << "password sabmited : " << this->sabmit_password << std::endl;
+    std::cout << "password : " << this->password << std::endl;
 }
 
 

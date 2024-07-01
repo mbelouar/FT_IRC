@@ -24,7 +24,6 @@ std::vector<client> clients;
 
 fds = irc_server.get_fds();
 
-// std::cout << "server is running :: fds : " << fds.front().fd << std::endl;
 
 while (1)
 {
@@ -77,43 +76,22 @@ while (1)
                     {
                         if ((clients[l].get_client_pfd().fd == fds[i].fd))
                         {
-                            // std::cout << buffer << std::endl;
-                            // if (clients[l].set_authenticated() == true)
-                            // {
-                            //     std::cout << "client : " << l << " authenticated" << std::endl;
-                            // }
-                            
-                            // if (buffer[0] != ':')
-                            // {
-                            // //    std::cout << "client found" << std::endl;
                                 clients[l].set_massage(buffer);
-                            //     memset(buffer, 0, sizeof(buffer));
-                            //     buffer[0] = '\0';
-                            // }else
-                            // {
-                                // std::cout << "---------------------------------" << std::endl;
-                                // std::cout << "client : " << l << std::endl;
-                                clients[l].print_massage();
-                                // std::cout << "---------------------------------" << std::endl;
 
-                                // std::cout << "---------------------------------" << std::endl;
-                                // clients[l].print_client();
-                                // std::cout << "---------------------------------" << std::endl;
-                            // }
+                                // clients[l].print_massage();
+
+                                if (clients[l].set_authenticated() == true)
+                                {
+                                    std::cout << clients[l].get_client_pfd().fd << " is authenticated" << std::endl;
+                                    send(clients[l].get_client_pfd().fd, "NOTICE * :*** Looking up your hostname...\r\n", 45, 0);
+                                }
+                                else
+                                {
+                                    std::cout << clients[l].get_client_pfd().fd << " is not authenticated" << std::endl;
+                                }
                         }
-                        
-
                         l++;
                     }
-                    // unsigned int j = 0;
-                    // while ( j < fds.size())
-                    // {
-                    //     if(fds[j].fd != irc_server.get_sockfd())
-                    //     {
-                    //         send(fds[j].fd, buffer, r, 0);
-                    //     }
-                    //     j++;
-                    // }
                 }
             }
         }
