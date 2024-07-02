@@ -83,17 +83,7 @@ while (1)
                                 if (clients[l].set_authenticated() == true)
                                 {
                                     std::cout << clients[l].get_client_pfd().fd << " is authenticated" << std::endl;
-
-                                    // work starts here baby 
-                                    // ft_comands_hamdler(){
-                                    //     if (m = "/join")
-                                    //         join();
-                                    //     else if (m == "/kick")
-                                    //         kick();
                                     clients[l].print_client();
-
-                                    }
-                                    
                                 }
                                 else
                                 {
@@ -107,7 +97,7 @@ while (1)
         }
         i++;
     }
-
+}
 
 return (0);
 }

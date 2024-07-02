@@ -4,4 +4,3 @@
 #include "server.hpp"
 
 #endif
-
