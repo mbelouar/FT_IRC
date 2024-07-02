@@ -83,7 +83,7 @@ while (1)
                                 if (clients[l].set_authenticated() == true)
                                 {
                                     std::cout << clients[l].get_client_pfd().fd << " is authenticated" << std::endl;
-                                    send(clients[l].get_client_pfd().fd, "NOTICE * :*** Looking up your hostname...\r\n", 45, 0);
+                                    clients[l].print_client();
                                 }
                                 else
                                 {
