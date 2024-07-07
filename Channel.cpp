@@ -1,5 +1,8 @@
 #include "Channel.hpp"
 
+// canonical form : 
+
+
 Channel::Channel() {
     name = "";
     topic = "";
@@ -40,3 +43,66 @@ Channel &Channel::operator=(const Channel &copy) {
 
 Channel::~Channel() {
 }
+
+void Channel::setName(std::string channelName) {
+    name = channelName;
+}
+
+// setters and getters :
+
+void Channel::setTopic(std::string channelTopic) {
+    topic = channelTopic;
+}
+
+void Channel::setClients(std::map<int, client> channelClients) {
+    clients = channelClients;
+}
+
+void Channel::setOperators(std::vector<int> channelOperators) {
+    operators = channelOperators;
+}
+
+void Channel::setChPassword(std::string channelPassword) {
+    chPassword = channelPassword;
+}
+
+void Channel::setChannelType(int channelType) {
+    channelType = channelType;
+}
+
+void Channel::setHasPassword(int hasPassword) {
+    hasPassword = hasPassword;
+}
+
+void Channel::setTopic(std::string channelTopic) {
+    topic = channelTopic;
+}
+
+std::string Channel::getName() {
+    return name;
+}
+
+std::string Channel::getTopic() {
+    return topic;
+}
+
+std::map<int, client> Channel::getClients() {
+    return clients;
+}
+
+std::vector<int> Channel::getOperators() {
+    return operators;
+}
+
+std::string Channel::getChPassword() {
+    return chPassword;
+}
+
+int Channel::getChannelType() {
+    return channelType;
+}
+
+int Channel::getHasPassword() {
+    return hasPassword;
+}
+
