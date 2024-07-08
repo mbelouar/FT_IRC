@@ -31,6 +31,11 @@ void client::set_realname(std::string realname)
 {
     this->realname = realname;
 }
+
+std::string client::getNickname const()
+{
+    return this->nickname;
+}
 std::vector<std::string> buffer_to_line(std::string buffer, std::string siparator)
 {
     std::vector<std::string> lines;

@@ -106,3 +106,29 @@ int Channel::getChannelType() {
 //     return hasPassword;
 // }
 
+std::map<int, client>::const_iterator Channel::beginClientIter() const {
+    return clients.begin();
+}
+
+std::map<int, client>::const_iterator Channel::endClientIter() const {
+    return clients.end();
+}
+
+int Channel::getClientID(const std::string &nickname) const {
+    for (const auto &client : clients) {
+        if (client.second.getNickname() == nickname) {
+            return client.first;
+        }
+    }
+    return -1;
+}
+
+int Channel::isClientInChannel(int fd) {
+    std::map<int, client>::iterator it;
+    it = clients.find(fd);
+    if (it != clients.end()) {
+        return 1;
+    }
+    return 0;
+}
+

@@ -29,6 +29,7 @@ class client
         void set_realname(std::string realname);
         bool set_authenticated();
         void set_registered(bool is_registered);
+        std::string getNickname() const;
         pollfd get_client_pfd();
         void set_client_pfd(pollfd client_pfd);
         void set_massage(std::string massage);

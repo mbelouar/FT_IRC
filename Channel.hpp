@@ -39,6 +39,8 @@ class Channel {
         std::string getTopic();
         std::vector<int> &getOperators();
         std::string getChPassword();
+        std::map<int, client>::const_iterator beginClientIter() const;
+        std::map<int, client>::const_iterator endClientIter() const;
         int getChannelType();
         int getClientID(const std::string &nickname) const;
         int isClientInChannel(int fd);
