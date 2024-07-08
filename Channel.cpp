@@ -132,3 +132,21 @@ int Channel::isClientInChannel(int fd) {
     return 0;
 }
 
+size_t Channel::getClientNb() const {
+    return clients.size();
+}
+
+void Channel::removeClient(int id) {
+    clients.erase(id);
+}
+
+void Channel::removeInitedClient(int id) {
+    inviteList.erase(id);
+}
+
+void Channel::removeOperator(int id) {
+    auto it = std::find(operators.begin(), operators.end(), id);
+    if (it != operators.end()) {
+        operators.erase(it);
+    }
+}

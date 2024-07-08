@@ -44,6 +44,10 @@ class Channel {
         int getChannelType();
         int getClientID(const std::string &nickname) const;
         int isClientInChannel(int fd);
+        size_t getClientNb() const;
+        void removeClient(int id);
+        void removeInitedClient(int id);
+        void removeOperator(int id);
 
 
 }
