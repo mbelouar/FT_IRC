@@ -6,6 +6,7 @@
 #include <map>
 #include <vector>
 #include "client.hpp"
+
 class Channel {
     private:
         std::string           name;
@@ -13,6 +14,7 @@ class Channel {
         std::map<int, client> clients;
         std::vector<int>      operators;
         std::string           chPassword;
+        std::map<int, client> inviteList;
         int                   channelType; 
         int                   hasPassword;
 
@@ -35,11 +37,12 @@ class Channel {
         // getters :
         std::string getName();
         std::string getTopic();
-        std::map<int, client> getClients();
-        std::vector<int> getOperators();
+        std::vector<int> &getOperators();
         std::string getChPassword();
         int getChannelType();
-        int getHasPassword();
+        int getClientID(const std::string &nickname) const;
+        int isClientInChannel(int fd);
+
 
 }
 

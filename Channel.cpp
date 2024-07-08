@@ -86,11 +86,11 @@ std::string Channel::getTopic() {
     return topic;
 }
 
-std::map<int, client> Channel::getClients() {
-    return clients;
-}
+// std::map<int, client> Channel::getClients() {
+//     return clients;
+// }
 
-std::vector<int> Channel::getOperators() {
+std::vector<int> &Channel::getOperators() {
     return operators;
 }
 
@@ -102,7 +102,7 @@ int Channel::getChannelType() {
     return channelType;
 }
 
-int Channel::getHasPassword() {
-    return hasPassword;
-}
+// int Channel::getHasPassword() {
+//     return hasPassword;
+// }
 
