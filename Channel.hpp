@@ -33,6 +33,7 @@ class Channel {
         void setChPassword(std::string channelPassword);
         void setChannelType(int channelType);
         void setHasPassword(int hasPassword);
+        void Channel::setInvitedList(int id, client &c);
 
         // getters :
         std::string getName();
@@ -44,7 +45,11 @@ class Channel {
         int getChannelType();
         int getClientID(const std::string &nickname) const;
         int isClientInChannel(int fd);
+        int getHasPassword() const;
         size_t getClientNb() const;
+        bool isClientInvited(int clientId) const;
+
+        const std::map<int, client> &Channel::getClientsFromChannel() const;
         void removeClient(int id);
         void removeInitedClient(int id);
         void removeOperator(int id);
