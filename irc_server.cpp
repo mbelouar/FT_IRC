@@ -84,6 +84,8 @@ while (1)
                                 {
                                     std::cout << clients[l].get_client_pfd().fd << " is authenticated" << std::endl;
                                     clients[l].print_client();
+
+                                    // work will bw done here 
                                 }
                                 else
                                 {
@@ -100,3 +102,7 @@ while (1)
 }
 return (0);
 }
+
+
+
+

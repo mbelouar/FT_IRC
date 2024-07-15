@@ -54,12 +54,12 @@ void Channel::setTopic(std::string channelTopic) {
     topic = channelTopic;
 }
 
-void Channel::setClients(std::map<int, client> channelClients) {
-    clients = channelClients;
+void Channel::setClients(int id, const std::string &userName) {
+    clients[id].set_nickname(userName);
 }
 
-void Channel::setOperators(std::vector<int> channelOperators) {
-    operators = channelOperators;
+void Channel::setOperators(int operator) {
+    operators.push_back(operator);
 }
 
 void Channel::setChPassword(std::string channelPassword) {
@@ -89,6 +89,8 @@ std::string Channel::getTopic() {
     return topic;
 }
 
+
+
 // std::map<int, client> Channel::getClients() {
 //     return clients;
 // }
@@ -111,6 +113,12 @@ int Channel::getChannelType() {
 
 int Channel::getHasPassword() const{
     return hasPassword;
+}
+
+
+std::map<int, client> Channel::getInvitedList() const{
+    return inviteList;
+
 }
 
 std::map<int, client>::const_iterator Channel::beginClientIter() const {

@@ -32,9 +32,14 @@ void client::set_realname(std::string realname)
     this->realname = realname;
 }
 
-std::string client::getNickname const()
+std::string client::getNickname() const
 {
     return this->nickname;
+}
+
+std::string client::getUsername()const
+{
+    return this->username;
 }
 std::vector<std::string> buffer_to_line(std::string buffer, std::string siparator)
 {
@@ -148,9 +153,15 @@ void client::set_massage(std::string massage)
     this->massage = this->massage + massage;
 }
 
+// get message 
+std::string client::get_massage()
+{
+    return this->massage;
+}
+
 void client::print_massage()
 {
-    this->index++;
+    this->index++;*/36250=
     std::cout << "--------------" << "the cleint " << this->client_pfd.fd << " : " << this->index << " : print massage method start ----------------" << std::endl;
     std::cout << this->massage;
     std::cout << "--------------print massage method end----------------" << std::endl;
