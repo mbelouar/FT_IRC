@@ -2,7 +2,7 @@ NAME=FT_IRC
 
 CC = c++
 FLAGS = -Wall -Wextra -Werror -std=c++98
-SRC = irc_server.cpp server.cpp client.cpp
+SRC = irc_server.cpp server.cpp client.cpp cmd.cpp Channel.cpp
 OBJ = $(SRC:.cpp=.o)
 
 all: $(NAME)

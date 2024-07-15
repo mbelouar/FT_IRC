@@ -10,11 +10,11 @@ Channel::Channel() {
     channelType = 0;
     hasPassword = 0;
 }
-Channel::Channel(std::string channelName, int channelOperators , int channelType) {
+Channel::Channel(std::string channelName , int chType) {
     name = channelName;
     topic = "";
     chPassword = "";
-    channelType = channelType;
+    channelType = chType;
     hasPassword = 0;
 }
 
@@ -58,25 +58,23 @@ void Channel::setClients(int id, const std::string &userName) {
     clients[id].set_nickname(userName);
 }
 
-void Channel::setOperators(int operator) {
-    operators.push_back(operator);
+void Channel::setOperators(int& op) {
+    operators.push_back(op);
 }
 
 void Channel::setChPassword(std::string channelPassword) {
     chPassword = channelPassword;
 }
 
-void Channel::setChannelType(int channelType) {
-    channelType = channelType;
+void Channel::setChannelType(int chType) {
+    channelType = chType;
 }
 
-void Channel::setHasPassword(int hasPassword) {
-    hasPassword = hasPassword;
+void Channel::setHasPassword(int hasPsd) {
+    hasPassword = hasPsd;
 }
 
-void Channel::setTopic(std::string channelTopic) {
-    topic = channelTopic;
-}
+
 
 void Channel::setInvitedList(int id, client &c){
     inviteList[id] = c;
@@ -135,9 +133,10 @@ const std::map<int, client> &Channel::getClientsFromChannel() const{
 }
 
 int Channel::getClientID(const std::string &nickname) const {
-    for (const auto &client : clients) {
-        if (client.second.getNickname() == nickname) {
-            return client.first;
+    std::map<int, client>::const_iterator it;
+    for (it = clients.begin(); it != clients.end(); ++it) {
+        if (it->second.getNickname() == nickname) {
+            return it->first;
         }
     }
     return -1;
@@ -156,9 +155,7 @@ size_t Channel::getClientNb() const {
     return clients.size();
 }
 
-int Channel::getHasPassword() const {
-    return hasPassword;
-}
+
 
 void Channel::removeClient(int id) {
     clients.erase(id);
@@ -169,12 +166,11 @@ void Channel::removeInitedClient(int id) {
 }
 
 void Channel::removeOperator(int id) {
-    auto it = std::find(operators.begin(), operators.end(), id);
+    std::vector<int>::iterator it = std::find(operators.begin(), operators.end(), id);
     if (it != operators.end()) {
         operators.erase(it);
     }
 }
-
 
 bool Channel::isClientInvited(int clientId) const{
     bool isInvited = (inviteList.count(clientId) > 0);

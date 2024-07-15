@@ -1,6 +1,13 @@
 #include "client.hpp"
 
 
+client::client()
+{
+    this->is_authenticated = false;
+    this->is_registered = false;
+    this->index = 0;
+}
+
 client::client(pollfd client_pfd, std::string password)
 {
     this->client_pfd = client_pfd;
@@ -154,14 +161,14 @@ void client::set_massage(std::string massage)
 }
 
 // get message 
-std::string client::get_massage()
+std::string client::get_message()
 {
     return this->massage;
 }
 
 void client::print_massage()
 {
-    this->index++;*/36250=
+    this->index++;
     std::cout << "--------------" << "the cleint " << this->client_pfd.fd << " : " << this->index << " : print massage method start ----------------" << std::endl;
     std::cout << this->massage;
     std::cout << "--------------print massage method end----------------" << std::endl;

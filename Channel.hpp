@@ -21,7 +21,7 @@ class Channel {
 
     public:
         Channel();
-        Channel(std::string channelName, int channelOperators , int channelType);
+        Channel(std::string channelName, int channelType);
         Channel(const Channel &copy);
         Channel &operator=(const Channel &copy);
         ~Channel();
@@ -31,7 +31,7 @@ class Channel {
         void setTopic(std::string channelTopic);
         // void setClients(std::map<int, client> channelClients);
         void setClients(int id, const std::string &userName);
-        void setOperators(int operator);
+        void setOperators(int& op);
         void setChPassword(std::string channelPassword);
         void setChannelType(int channelType);
         void setHasPassword(int hasPassword);
@@ -52,13 +52,13 @@ class Channel {
         std::map<int, client> getInvitedList() const;
         bool isClientInvited(int clientId) const;
 
-        const std::map<int, client> &Channel::getClientsFromChannel() const;
+        const std::map<int, client> &getClientsFromChannel() const;
         void removeClient(int id);
         void removeInitedClient(int id);
         void removeOperator(int id);
 
 
-}
+};
 
 
 

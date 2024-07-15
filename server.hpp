@@ -32,7 +32,7 @@ class Server
 
         void joinCmd(std::vector<std::string> &param, int fd);
         std::string getNameId(int fd);
-        void sendJoinMessage(int fd, const std::string &channelName);
+        void joinMessage(int fd, const std::string &channelName);
          void setupChannel(const std::string &channelName, int fd, const std::string &password);
          void JoinMessage(int fd, const std::string &channelName);
          void command(int fd);

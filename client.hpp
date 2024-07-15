@@ -22,6 +22,7 @@ class client
         int index;
 
     public :
+        client();
         client(pollfd client_pfd, std::string password);
         ~client();
         void set_nickname(std::string nickname);

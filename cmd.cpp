@@ -1,8 +1,11 @@
 #include "Server.hpp"
 #include "Channel.hpp"
 #include "client.hpp"
-
-
+#include <stdexcept>
+#include <sstream>
+#include <algorithm>
+#include <sys/socket.h>
+#include <unistd.h>
 
 void sendMessage(int fd, const std::string& msg) {
     if (send(fd, msg.c_str(), msg.size(), 0) == -1) {
@@ -21,7 +24,6 @@ std::vector<std::string> split(std::string line, char c) {
     return vec;
 }
 
-
 void Server::setupChannel(const std::string &channelName, int fd, const std::string &password) {
     Channel newChannel;
     newChannel.setName(channelName);
@@ -39,23 +41,15 @@ void Server::JoinMessage(int fd, const std::string &channelName) {
     sendMessage(fd, message);
 }
 
-
-
-
-std::string Server::getNameId(int fd)
-{
-    auto it = _clients.find(fd);
-    if (it != _clients.end())
-    {
+std::string Server::getNameId(int fd) {
+    std::map<int, client>::iterator it = _clients.find(fd);
+    if (it != _clients.end()) {
         return it->second.getNickname();
     }
     std::string message = ":" + std::to_string(fd) + " 401 * :No such nick/channel\n";  
     sendMessage(fd, message);
     return "ERROR"; 
 }
-
-
-
 
 void Server::joinCmd(std::vector<std::string> &param, int fd) {
     if (param.empty() || param[0][0] != '#' || (param[0][0] == '#' && param[0].size() == 1)) {
@@ -71,12 +65,12 @@ void Server::joinCmd(std::vector<std::string> &param, int fd) {
     }
 
     for (size_t i = 0; i < chn.size(); ++i) {
-        auto it = channels.find(chn[i]);
+        std::map<std::string, Channel>::iterator it = channels.find(chn[i]);
         bool channelCreated = (it == channels.end());
 
         if (channelCreated) {
             setupChannel(chn[i], fd, (param.size() == 2 && key.size() > i) ? key[i] : "");
-            sendJoinMessage(fd, chn[i]);
+            JoinMessage(fd, chn[i]);
             continue;
         }
 
@@ -97,14 +91,14 @@ void Server::joinCmd(std::vector<std::string> &param, int fd) {
 
             if (channel.isClientInvited(fd)) {
                 channel.setClients(fd, _clients[fd].getNickname());
-                sendJoinMessage(fd, chn[i]);
+                JoinMessage(fd, chn[i]);
                 continue;
             }
 
             if (channel.getHasPassword() == 1) {
                 if ((key.size() > i && channel.getChPassword() == key[i]) || key.empty()) {
                     channel.setClients(fd, _clients[fd].getNickname());
-                    sendJoinMessage(fd, chn[i]);
+                    JoinMessage(fd, chn[i]);
                 } else {
                     std::string message = ":" + getNameId(fd) + " 475 * Cannot join channel (+k)\n";
                     sendMessage(fd, message);
@@ -116,7 +110,7 @@ void Server::joinCmd(std::vector<std::string> &param, int fd) {
         if (channel.getHasPassword() == 1) {
             if (key.size() > i && channel.getChPassword() == key[i]) {
                 channel.setClients(fd, _clients[fd].getNickname());
-                sendJoinMessage(fd, chn[i]);
+                JoinMessage(fd, chn[i]);
             } else {
                 std::string message = ":" + getNameId(fd) + " 475 * Cannot join channel (+k)\n";
                 sendMessage(fd, message);
@@ -125,10 +119,9 @@ void Server::joinCmd(std::vector<std::string> &param, int fd) {
         }
 
         channel.setClients(fd, _clients[fd].getNickname());
-        sendJoinMessage(fd, chn[i]);
+        JoinMessage(fd, chn[i]);
     }
 }
-
 
 void Server::command(int fd) {
     std::string line = _clients[fd].get_message();
@@ -144,9 +137,9 @@ void Server::command(int fd) {
         res.push_back(arg);
     }
 
-    if (command == "join")
+    if (command == "join") {
         joinCmd(res, fd);
-    else {
+    } else {
         std::string msg = "421 " + _clients[fd].getNickname() + " " + command + " :Unknown command\n";
         sendMessage(fd, msg);
     }
