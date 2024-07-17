@@ -8,7 +8,7 @@ Channel::Channel()
 	this->_pass = "";
 	this->_mode = "";
 	this->_topic = "";
-	this->_limit = CHANMAX;
+	this->_limit = 50;
 	this->_is_private = false;
 	this->_inviteMode = false;
 	this->_topicMode = false;
@@ -21,7 +21,7 @@ Channel::Channel(std::string name, std::string pass)
 	this->_pass = pass;
 	this->_mode = "";
 	this->_topic = "";
-	this->_limit = CHANMAX;
+	this->_limit = 50;
 	this->_inviteMode = false;
 	this->_is_private = false;
 	this->_topicMode = false;
