@@ -53,9 +53,7 @@ class Channel {
         bool isClientInvited(int clientId) const;
 
         const std::map<int, client> &getClientsFromChannel() const;
-        void removeClient(int id);
-        void removeInitedClient(int id);
-        void removeOperator(int id);
+
 
 
 };

@@ -1,8 +1,5 @@
 #include "Channel.hpp"
 
-// canonical form : 
-
-
 Channel::Channel() {
     name = "";
     topic = "";
@@ -89,10 +86,6 @@ std::string Channel::getTopic() {
 
 
 
-// std::map<int, client> Channel::getClients() {
-//     return clients;
-// }
-
 std::vector<int> &Channel::getOperators() {
     return operators;
 }
@@ -155,22 +148,6 @@ size_t Channel::getClientNb() const {
     return clients.size();
 }
 
-
-
-void Channel::removeClient(int id) {
-    clients.erase(id);
-}
-
-void Channel::removeInitedClient(int id) {
-    inviteList.erase(id);
-}
-
-void Channel::removeOperator(int id) {
-    std::vector<int>::iterator it = std::find(operators.begin(), operators.end(), id);
-    if (it != operators.end()) {
-        operators.erase(it);
-    }
-}
 
 bool Channel::isClientInvited(int clientId) const{
     bool isInvited = (inviteList.count(clientId) > 0);
