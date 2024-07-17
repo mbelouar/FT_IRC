@@ -8,7 +8,35 @@
 #include <ctime>
 
 
+std::vector<std::string> ft_split(std::string str, char sep)
+{
+    std::vector<std::string> res;
+    std::string word;
+    std::stringstream stream(str);
 
+    for(; std::getline(stream, word, sep); ){
+        if (!word.empty())
+            res.push_back(word);
+    }
+    return (res);
+}
+
+void	ft_send(int fd, std::string message)
+{
+	send(fd, message.c_str(), message.size(), 0);
+
+}
+
+std::string get_adderss()
+{
+    char hostname[1024];
+    hostname[1023] = '\0';
+    gethostname(hostname, 1023);
+    struct hostent *host = gethostbyname(hostname);
+    if (host)
+        return std::string(inet_ntoa(*(struct in_addr*)*host->h_addr_list));
+    return "localhost";
+}
 
 void ft_replace(std::string &str, char c, std::string rep)
 {
@@ -69,14 +97,14 @@ std::string make_time(void)
 }
 
 
-std::string Server::join_response(std::vector<std::string> split, Client &client)
+std::string Server::join_response(std::vector<std::string> split, client &client)
 {
 	Channel mychannel;
 
 	if(!client.get_print())
 		return (":localhost 451 * JOIN :You must finish connecting with nickname first.\r\n");
 	if(split.size() == 1 || (split.size() == 2 && split[1] == "#"))
-		return(":localhost 461 " + client.get_nick() + " " + split[0] + " :Not enough parameters\r\n");
+		return(":localhost 461 " + client.getNickname() + " " + split[0] + " :Not enough parameters\r\n");
 	else if(split.size() >= 2)
 	{
 		std::vector<std::string> names;
@@ -87,9 +115,9 @@ std::string Server::join_response(std::vector<std::string> split, Client &client
 		for(size_t i = 0; i < names.size(); i++)
 		{
 			if(names[i][0] != '#')
-				mysend(client.get_fd(), ":localhost 403 " + client.get_nick() + " " + names[i] + " :No such channel\r\n");
+				ft_send(client.get_pollfd().fd, ":localhost 403 " + client.getNickname() + " " + names[i] + " :No such channel\r\n");
 			else if(client.check_member(names[i]))
-				mysend(client.get_fd(), ":localhost 443 " + client.get_nick() + " " + names[i] + ":is already on channel\r\n");
+				ft_send(client.get_pollfd().fd, ":localhost 443 " + client.getNickname() + " " + names[i] + ":is already on channel\r\n");
 			else
 			{
 				if(!this->_channels.count(names[i]))
@@ -100,27 +128,27 @@ std::string Server::join_response(std::vector<std::string> split, Client &client
 					else 
 						mychannel = Channel(names[i], "");
 
-					mychannel.add_member(client.get_fd());
-					mychannel.add_moderator(client.get_fd());
+					mychannel.add_member(client.get_pollfd().fd);
+					mychannel.add_moderator(client.get_pollfd().fd);
 					mychannel.set_creation_time(make_time());
 					this->_channels.insert(make_pair(names[i], mychannel));
 
-					mysend(client.get_fd(), ":" + client.get_nick() + "!" + client.get_userName() + "@" + get_adderss() + " JOIN :" + names[i] + "\r\n");
+					ft_send(client.get_pollfd().fd, ":" + client.getNickname() + "!" + client.getUsername() + "@" + get_adderss() + " JOIN :" + names[i] + "\r\n");
 				}
 				else
 				{//if channel exists
 					if(this->_channels[names[i]].get_limitMode() && this->_channels[names[i]].get_limit() <= (int)this->_channels[names[i]].get_members().size())
-						mysend(client.get_fd(), ":localhost 471 " + client.get_nick() + " " + names[i] + " :Cannot join channel (+l)\r\n");
+						ft_send(client.get_pollfd().fd, ":localhost 471 " + client.getNickname() + " " + names[i] + " :Cannot join channel (+l)\r\n");
 					else if(this->_channels[names[i]].get_inviteMode())
 					{
-						if(this->_channels[names[i]].is_invited(client.get_nick()))
+						if(this->_channels[names[i]].is_invited(client.getNickname()))
 						{
 							client.set_channel(names[i]);
-							this->_channels[names[i]].add_member(client.get_fd());
-							this->_channels[names[i]].broadcast_message(":" + client.get_nick() + "!~" + client.get_userName() + "@"+ get_adderss() + " JOIN :" + names[i] + "\r\n", 0);
+							this->_channels[names[i]].add_member(client.get_pollfd().fd);
+							this->_channels[names[i]].broadcast_message(":" + client.getNickname() + "!~" + client.getUsername() + "@"+ get_adderss() + " JOIN :" + names[i] + "\r\n", 0);
 						}
 						else
-							mysend(client.get_fd(), ":localhost 473 " + client.get_nick() + " " + names[i] + " :Cannot join channel (+i)\r\n");
+							ft_send(client.get_pollfd().fd, ":localhost 473 " + client.getNickname() + " " + names[i] + " :Cannot join channel (+i)\r\n");
 					}
 					else
 					{
@@ -129,22 +157,22 @@ std::string Server::join_response(std::vector<std::string> split, Client &client
 							if(this->_channels[names[i]].get_pass() == key[i])
 							{
 								client.set_channel(names[i]);
-								this->_channels[names[i]].add_member(client.get_fd());
-								this->_channels[names[i]].broadcast_message(":" + client.get_nick() + "!~" + client.get_userName() + "@"+ get_adderss() + " JOIN :" + names[i] + "\r\n", 0);
+								this->_channels[names[i]].add_member(client.get_pollfd().fd);
+								this->_channels[names[i]].broadcast_message(":" + client.getNickname() + "!~" + client.getUsername() + "@"+ get_adderss() + " JOIN :" + names[i] + "\r\n", 0);
 							}
 							else
-								mysend(client.get_fd(), ":localhost 475 " + client.get_nick() + " " + names[i] + " :Cannot join channel (+k)\r\n");
+								ft_send(client.get_pollfd().fd, ":localhost 475 " + client.getNickname() + " " + names[i] + " :Cannot join channel (+k)\r\n");
 						}
 						else
 						{//if key is not provided
 							if(this->_channels[names[i]].get_pass() == "")
 							{
 								client.set_channel(names[i]);
-								this->_channels[names[i]].add_member(client.get_fd());
-								this->_channels[names[i]].broadcast_message(":" + client.get_nick() + "!~" + client.get_userName() + "@"+ get_adderss() + " JOIN :" + names[i] + "\r\n", 0);
+								this->_channels[names[i]].add_member(client.get_pollfd().fd);
+								this->_channels[names[i]].broadcast_message(":" + client.getNickname() + "!~" + client.getUsername() + "@"+ get_adderss() + " JOIN :" + names[i] + "\r\n", 0);
 							}
 							else
-								mysend(client.get_fd(), ":localhost 475 " + client.get_nick() + " " + names[i] + " :Cannot join channel (+k)\r\n");
+								ft_send(client.get_pollfd().fd, ":localhost 475 " + client.getNickname() + " " + names[i] + " :Cannot join channel (+k)\r\n");
 						}
 					}
 				}

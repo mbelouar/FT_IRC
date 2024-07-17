@@ -1,5 +1,7 @@
 #include "Channel.hpp"
- 
+#include <sys/socket.h>  // For socket-related functions
+#include <arpa/inet.h>   // For IPv4 conversion functions like inet_pton
+#include <unistd.h>      // For close()
 
 
 Channel::Channel()
@@ -231,4 +233,3 @@ void Channel::broadcast_message(std::string message, int fd)
 			send(this->members[i], message.c_str(), message.size(), 0);
 	}
 }
-

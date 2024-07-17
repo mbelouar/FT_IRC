@@ -33,7 +33,7 @@ class Server
         ~Server();
 
         void    parse_request(char *read, int fd, fd_set *master);
-        std::string join_response(std::vector<std::string> split, Client &client);
+        std::string join_response(std::vector<std::string> split, client &client);
 
         
 };

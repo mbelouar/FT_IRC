@@ -41,8 +41,11 @@ class client
         void print_massage();
         void print_client();
         std::string get_message();
+        void set_pollfd(pollfd pfd);
+        // get pollfd:
+        pollfd get_pollfd();
 
-
+        client(int fd);
 
 
 

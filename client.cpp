@@ -184,31 +184,39 @@ void client::print_client()
 }
 
 
+pollfd client::get_pollfd()
+{
+    return this->client_pfd;
+}
+
+void client::set_pollfd(pollfd pfd)
+{
+    this->client_pfd = pfd;
+}
 
 
 
 
-
-bool Client::get_print() const{
+bool client::get_print() const{
 
 	return this->_print;
 }
-std::vector<std::string> &Client::get_channel(){
+std::vector<std::string> &client::get_channel(){
 
 	return  _channels;
 }
 
-void	Client::set_print(bool print)
+void	client::set_print(bool print)
 {
 	this->_print = print;
 }
 
-void	Client::set_channel(std::string channel)
+void	client::set_channel(std::string channel)
 {
 	this->_channels.push_back(channel);
 }
 
-bool	Client::check_member(std::string member)
+bool	client::check_member(std::string member)
 {
 	for (size_t i = 0; i < this->_channels.size(); i++)
 	{
@@ -219,10 +227,12 @@ bool	Client::check_member(std::string member)
 }
 
 
+    client::client(int fd) {
+        client_pfd.fd = fd;
+    }
 
-/*********** part ****************/
 
-void	Client::remove_channel(std::string channel)
+void	client::remove_channel(std::string channel)
 {
 	for (size_t i = 0; i < this->_channels.size(); i++)
 	{
