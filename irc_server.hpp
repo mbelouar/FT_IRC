@@ -1,6 +1,6 @@
 #ifndef IRC_SERVER_HPP
 #define IRC_SERVER_HPP
 
-#include "Server.hpp"
+#include "server.hpp"
 
 #endif

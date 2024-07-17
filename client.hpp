@@ -20,9 +20,6 @@ class client
         bool is_registered;
         std::string massage;
         int index;
-        std::vector<std::string> _channels;
-        bool 		_print;
-
 
     public :
         client();
@@ -41,22 +38,6 @@ class client
         void print_massage();
         void print_client();
         std::string get_message();
-        void set_pollfd(pollfd pfd);
-        // get pollfd:
-        pollfd get_pollfd();
-
-        client(int fd);
-
-
-
-    //
-    bool get_print() const;
-
-    	void	set_channel(std::string channel);
-		std::vector<std::string>	&get_channel();
-		bool	check_member(std::string memeber);	
-		void	remove_channel(std::string channel);
-		void	set_print(bool print);
 
 
 };
@@ -64,4 +45,3 @@ class client
 std::vector<std::string> buffer_to_line(std::string buffer);
 
 #endif
-

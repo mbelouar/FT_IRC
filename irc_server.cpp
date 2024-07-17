@@ -1,5 +1,5 @@
 #include "irc_server.hpp"
-#include "Server.hpp"
+#include "server.hpp"
 #include "client.hpp"
 #include <algorithm> // for std::transform
 
