@@ -1,7 +1,6 @@
 #include "Channel.hpp"
  
 
-#include "../includes/headers.hpp"
 
 Channel::Channel()
 {

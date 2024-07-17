@@ -40,22 +40,15 @@ void    server::parse_request(char *read, int fd, fd_set *master)
     split = modifier(request);
     if(split.empty())
         response = "";
-    else if(to_upper(split[0]) == "PASS")
-        response = pass_response(split, this->_map[fd]);
-    else if(to_upper(split[0]) == "USER")
-        response = user_response(split, this->_map[fd]);
-    else if(to_upper(split[0]) == "NICK")
         response = nick_response(split, this->_map[fd]);
     else if(to_upper(split[0]) == "JOIN" )
-        response = join_response(split, this->_map[fd])
-;
+        response = join_response(split, this->_map[fd]);
     else
         response = "";
     send(fd, response.c_str(), response.size(), 0);
 }
 
 
-#include "../includes/headers.hpp"
 
 std::string make_time(void)
 {
