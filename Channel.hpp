@@ -6,58 +6,71 @@
 #include <map>
 #include <vector>
 #include "client.hpp"
+class Channel
+{
+	private:
+		std::string _name;
+		std::string _pass;
+		std::string _topic;
+		std::string _mode;
+		std::string _creation_time;
+		int			_limit;
+		bool		_is_private;
+		bool		_inviteMode;
+		bool		_topicMode;
+		bool		_limitMode;
 
-class Channel {
-    private:
-        std::string           name;
-        std::string           topic;
-        std::map<int, client> clients;
-        std::vector<int>      operators;
-        std::string           chPassword;
-        std::map<int, client> inviteList;
-        // std::map<std::string , Channel> channels;
-        int                   channelType; 
-        int                   hasPassword;
+		std::vector<int>			members;
+		std::vector<int>			_moderators;
+		std::vector<std::string>	_bans_list;
+		std::vector<std::string>	_invited_list;
+	public:
+		//constructors
+		Channel();
+		Channel(std::string name, std::string pass);
+		~Channel();
+		//getters
+		std::string get_name() const;
+		std::string get_pass() const;
+		std::string get_topic() const;
+		std::string get_mode() const;
+		int			get_limit() const;
 
-    public:
-        Channel();
-        Channel(std::string channelName, int channelType);
-        Channel(const Channel &copy);
-        Channel &operator=(const Channel &copy);
-        ~Channel();
+		bool 		get_inviteMode() const;
+		bool		get_is_private() const;
+		bool		get_topicMode() const;
+		bool		get_limitMode() const;
+		std::string get_creation_time() const;
+		std::vector<int> get_members() const;
+		std::vector<int> get_moderators() const;
+		//setters
+		void set_name(std::string name);
+		void set_creation_time(std::string time);
+		void set_pass(std::string pass);
+		void set_topic(std::string topic);
+		void set_mode(std::string mode);
+		void set_limit(int limit);
+		void set_inviteMode(bool inviteMode);
+		void set_is_private(bool is_private);
+		void set_topicMode(bool topicMode);
+		void set_limitMode(bool limitMode);
 
-        // setters : 
-        void setName(std::string channelName);
-        void setTopic(std::string channelTopic);
-        // void setClients(std::map<int, client> channelClients);
-        void setClients(int id, const std::string &userName);
-        void setOperators(int& op);
-        void setChPassword(std::string channelPassword);
-        void setChannelType(int channelType);
-        void setHasPassword(int hasPassword);
-        void setInvitedList(int id, client &c);
-
-        // getters :
-        std::string getName();
-        std::string getTopic();
-        std::vector<int> &getOperators();
-        std::string getChPassword();
-        std::map<int, client>::const_iterator beginClientIter() const;
-        std::map<int, client>::const_iterator endClientIter() const;
-        int getChannelType();
-        int getClientID(const std::string &nickname) const;
-        int isClientInChannel(int fd);
-        int getHasPassword() const;
-        size_t getClientNb() const;
-        std::map<int, client> getInvitedList() const;
-        bool isClientInvited(int clientId) const;
-
-        const std::map<int, client> &getClientsFromChannel() const;
-        void removeClient(int id);
-        void removeInitedClient(int id);
-        void removeOperator(int id);
+		//methods
+		void add_member(int fd);
+		void add_moderator(int fd);
+		void remove_member(int fd);
+		void remove_moderator(int fd);
+		void add_invited_list(std::string nick);
 
 
+		bool is_invited(std::string nick);
+
+		// for part
+		bool channel_exist(std::map<std::string, Channel> &channels, std::string channel_name);
+		bool is_member(int fd);
+		bool is_moderator(int fd);
+		void broadcast_message(std::string message, int fd);
+		bool is_empty() const;
 };
 
 

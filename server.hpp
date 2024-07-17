@@ -18,8 +18,10 @@ class Server
         int sockfd;
         struct addrinfo hints, *server;
         std::vector<pollfd> fds;
-         std::map<std::string , Channel> channels;
-         std::map<int, client> _clients;
+
+        std::map<int, Client>										_map;//fd, client
+		static bool 												romoved_channel;
+		std::map<std::string, Channel>								_channels;//channel name, channel
        
     public :
         Server(std::string ip, std::string port);

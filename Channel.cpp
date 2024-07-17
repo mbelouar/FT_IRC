@@ -1,179 +1,235 @@
 #include "Channel.hpp"
+ 
 
-// canonical form : 
+#include "../includes/headers.hpp"
 
-
-Channel::Channel() {
-    name = "";
-    topic = "";
-    chPassword = "";
-    channelType = 0;
-    hasPassword = 0;
-}
-Channel::Channel(std::string channelName , int chType) {
-    name = channelName;
-    topic = "";
-    chPassword = "";
-    channelType = chType;
-    hasPassword = 0;
+Channel::Channel()
+{
+	this->_name = "";
+	this->_pass = "";
+	this->_mode = "";
+	this->_topic = "";
+	this->_limit = CHANMAX;
+	this->_is_private = false;
+	this->_inviteMode = false;
+	this->_topicMode = false;
+	this->_limitMode = false;
 }
 
-Channel::Channel(const Channel &copy) {
-    name = copy.name;
-    topic = copy.topic;
-    clients = copy.clients;
-    operators = copy.operators;
-    chPassword = copy.chPassword;
-    channelType = copy.channelType;
-    hasPassword = copy.hasPassword;
-}
-
-Channel &Channel::operator=(const Channel &copy) {
-    if (this == &copy) {
-    name = copy.name;
-    topic = copy.topic;
-    clients = copy.clients;
-    operators = copy.operators;
-    chPassword = copy.chPassword;
-    channelType = copy.channelType;
-    hasPassword = copy.hasPassword;
-    }
-    return *this;
-}
-
-Channel::~Channel() {
-}
-
-void Channel::setName(std::string channelName) {
-    name = channelName;
-}
-
-// setters and getters :
-
-void Channel::setTopic(std::string channelTopic) {
-    topic = channelTopic;
-}
-
-void Channel::setClients(int id, const std::string &userName) {
-    clients[id].set_nickname(userName);
-}
-
-void Channel::setOperators(int& op) {
-    operators.push_back(op);
-}
-
-void Channel::setChPassword(std::string channelPassword) {
-    chPassword = channelPassword;
-}
-
-void Channel::setChannelType(int chType) {
-    channelType = chType;
-}
-
-void Channel::setHasPassword(int hasPsd) {
-    hasPassword = hasPsd;
+Channel::Channel(std::string name, std::string pass)
+{
+	this->_name = name;
+	this->_pass = pass;
+	this->_mode = "";
+	this->_topic = "";
+	this->_limit = CHANMAX;
+	this->_inviteMode = false;
+	this->_is_private = false;
+	this->_topicMode = false;
+	this->_limitMode = false;
 }
 
 
-
-void Channel::setInvitedList(int id, client &c){
-    inviteList[id] = c;
-}
-std::string Channel::getName() {
-    return name;
+Channel::~Channel()
+{
 }
 
-std::string Channel::getTopic() {
-    return topic;
+//getters
+std::string Channel::get_name() const
+{
+	return (this->_name);
+}
+std::string Channel::get_pass() const
+{
+	return (this->_pass);
+}
+std::string Channel::get_topic() const
+{
+	return (this->_topic);
+}
+std::string Channel::get_mode() const
+{
+	return (this->_mode);
+}
+int Channel::get_limit() const
+{
+	return this->_limit;
+}
+bool Channel::get_inviteMode() const
+{
+	return (this->_inviteMode);
+}
+bool		Channel::get_is_private() const
+{
+	return (this->_is_private);
 }
 
-
-
-// std::map<int, client> Channel::getClients() {
-//     return clients;
-// }
-
-std::vector<int> &Channel::getOperators() {
-    return operators;
+bool Channel::get_topicMode() const
+{
+	return this->_topicMode;
 }
 
-std::string Channel::getChPassword() {
-    return chPassword;
+bool Channel::get_limitMode() const
+{
+	return this->_limitMode;
 }
 
-int Channel::getChannelType() {
-    return channelType;
+std::string Channel::get_creation_time() const
+{
+	return	this->_creation_time;
 }
 
-// int Channel::getHasPassword() {
-//     return hasPassword;
-// }
-
-int Channel::getHasPassword() const{
-    return hasPassword;
+std::vector<int> Channel::get_members() const
+{
+	return this->members;
 }
 
-
-std::map<int, client> Channel::getInvitedList() const{
-    return inviteList;
-
+std::vector<int> Channel::get_moderators() const
+{
+	return this->_moderators;
 }
 
-std::map<int, client>::const_iterator Channel::beginClientIter() const {
-    return clients.begin();
+//setters
+void Channel::set_name(std::string name)
+{
+	this->_name = name;
+}
+void Channel::set_creation_time(std::string time)
+{
+	this->_creation_time = time;
+}
+void Channel::set_pass(std::string pass)
+{
+	this->_pass = pass;
+}
+void Channel::set_topic(std::string topic)
+{
+	this->_topic = topic;
+}
+void Channel::set_mode(std::string mode)
+{
+	this->_mode = mode;
+}
+void Channel::set_limit(int limit)
+{
+	this->_limit = limit;
+}
+void Channel::set_inviteMode(bool _inviteMode)
+{
+	this->_inviteMode = _inviteMode;
+}
+void Channel::set_is_private(bool is_private)
+{
+	this->_is_private = is_private;
 }
 
-std::map<int, client>::const_iterator Channel::endClientIter() const {
-    return clients.end();
+void Channel::set_topicMode(bool topicMode)
+{
+	this->_topicMode = topicMode;
 }
 
-const std::map<int, client> &Channel::getClientsFromChannel() const{
-    return clients;
-
+void Channel::set_limitMode(bool limitMode)
+{
+	this->_limitMode = limitMode;
 }
 
-int Channel::getClientID(const std::string &nickname) const {
-    std::map<int, client>::const_iterator it;
-    for (it = clients.begin(); it != clients.end(); ++it) {
-        if (it->second.getNickname() == nickname) {
-            return it->first;
-        }
-    }
-    return -1;
+//methods
+void Channel::add_member(int fd)
+{
+	this->members.push_back(fd);
+}
+void Channel::add_moderator(int fd)
+{
+	this->_moderators.push_back(fd);
 }
 
-int Channel::isClientInChannel(int fd) {
-    std::map<int, client>::iterator it;
-    it = clients.find(fd);
-    if (it != clients.end()) {
-        return 1;
-    }
-    return 0;
+void Channel::add_invited_list(std::string nick)
+{
+	this->_invited_list.push_back(nick);
 }
 
-size_t Channel::getClientNb() const {
-    return clients.size();
+bool Channel::is_invited(std::string nick)
+{
+	for (size_t i = 0; i < this->_invited_list.size(); i++)
+	{
+		if (this->_invited_list[i] == nick)
+			return true;
+	}
+	return false;
 }
 
+// for part
 
-
-void Channel::removeClient(int id) {
-    clients.erase(id);
+bool Channel::channel_exist(std::map<std::string, Channel> &channels, std::string channel_name)
+{
+	std::map<std::string, Channel>::iterator it = channels.begin();
+	std::map<std::string, Channel>::iterator ite = channels.end();
+	for (; it != ite; it++)
+	{
+		if (it->first == channel_name)
+			return true;
+	}
+	return false;
 }
 
-void Channel::removeInitedClient(int id) {
-    inviteList.erase(id);
+bool Channel::is_member(int fd)
+{
+	for (size_t i = 0; i < this->members.size(); i++)
+	{
+		if (this->members[i] == fd)
+			return true;
+	}
+	return false;
 }
 
-void Channel::removeOperator(int id) {
-    std::vector<int>::iterator it = std::find(operators.begin(), operators.end(), id);
-    if (it != operators.end()) {
-        operators.erase(it);
-    }
+bool Channel::is_moderator(int fd)
+{
+	for (size_t i = 0; i < this->_moderators.size(); i++)
+	{
+		if (this->_moderators[i] == fd)
+			return true;
+	}
+	return false;
 }
 
-bool Channel::isClientInvited(int clientId) const{
-    bool isInvited = (inviteList.count(clientId) > 0);
-    return isInvited;
+void Channel::remove_member(int fd)
+{
+	for (size_t i = 0; i < this->members.size(); i++)
+	{
+		if (this->members[i] == fd)
+		{
+			this->members.erase(this->members.begin() + i);
+			return;
+		}
+	}
+}
+
+void Channel::remove_moderator(int fd)
+{
+	for (size_t i = 0; i < this->_moderators.size(); i++)
+	{
+		if (this->_moderators[i] == fd)
+		{
+			this->_moderators.erase(this->_moderators.begin() + i);
+			return;
+		}
+	}
+}
+
+bool	Channel::is_empty() const
+{
+	if(this->get_name().empty())
+		return true;
+	return false;
+	
+}
+
+void Channel::broadcast_message(std::string message, int fd)
+{
+	for (size_t i = 0; i < this->members.size(); i++)
+	{
+		if(this->members[i] != fd)
+			send(this->members[i], message.c_str(), message.size(), 0);
+	}
 }
 
