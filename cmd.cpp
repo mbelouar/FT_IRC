@@ -1,3 +1,15 @@
+#include "server.hpp"
+#include <iostream>
+#include <string>
+#include <map>
+#include <vector>
+#include "client.hpp"
+#include "Channel.hpp"
+#include <ctime>
+
+
+
+
 void ft_replace(std::string &str, char c, std::string rep)
 {
     size_t pos = str.find(c);
@@ -27,10 +39,10 @@ std::vector<std::string> modifier(std::string str)
     return split;
 }
 
-void    server::parse_request(char *read, int fd, fd_set *master)
+void    Server::parse_request(char *read, int fd, fd_set *master)
 {
     // std::cout << read << std::endl;
-    Client client(fd);
+    client client(fd);
     std::string request(read);
     std::string response;
     std::vector<std::string> split;
@@ -40,7 +52,6 @@ void    server::parse_request(char *read, int fd, fd_set *master)
     split = modifier(request);
     if(split.empty())
         response = "";
-        response = nick_response(split, this->_map[fd]);
     else if(to_upper(split[0]) == "JOIN" )
         response = join_response(split, this->_map[fd]);
     else
@@ -58,7 +69,7 @@ std::string make_time(void)
 }
 
 
-std::string server::join_response(std::vector<std::string> split, Client &client)
+std::string Server::join_response(std::vector<std::string> split, Client &client)
 {
 	Channel mychannel;
 

@@ -19,9 +19,9 @@ class Server
         struct addrinfo hints, *server;
         std::vector<pollfd> fds;
 
-        std::map<int, Client>										_map;//fd, client
+        std::map<int, client>										_map;
 		static bool 												romoved_channel;
-		std::map<std::string, Channel>								_channels;//channel name, channel
+		std::map<std::string, Channel>								_channels;
        
     public :
         Server(std::string ip, std::string port);
@@ -32,12 +32,8 @@ class Server
         int get_sockfd();
         ~Server();
 
-        void joinCmd(std::vector<std::string> &param, int fd);
-        std::string getNameId(int fd);
-        void joinMessage(int fd, const std::string &channelName);
-         void setupChannel(const std::string &channelName, int fd, const std::string &password);
-         void JoinMessage(int fd, const std::string &channelName);
-         void command(int fd);
+        void    parse_request(char *read, int fd, fd_set *master);
+        std::string join_response(std::vector<std::string> split, Client &client);
 
         
 };
