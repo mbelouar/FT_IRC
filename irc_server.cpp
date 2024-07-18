@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
                                     // work will bw done here 
                                     irc_server.command(fds[i].fd);
 
-                                    // std::cout << clients[l].get_message();
+                                    std::cout << "we are reciving message from authenticated client : " << clients[l].get_message() << std::endl;
 
 
                                  }
@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
                                     // std::cout << clients[l].get_client_pfd().fd << " is not authenticated" << std::endl;
                                     if (clients[l].set_authenticated() == true)
                                     {
-                                        std::cout << "now is lol" << std::endl;
+                                        std::cout << "now is authenticated" << std::endl;
                                         clients[l].clear_massage();
                                         std::cout << clients[l].get_message() << std::endl;
                                     }
