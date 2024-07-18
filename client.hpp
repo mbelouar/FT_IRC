@@ -34,10 +34,12 @@ class client
         std::string getUsername() const;
         pollfd get_client_pfd();
         void set_client_pfd(pollfd client_pfd);
+        void set_massage_for_auth(std::string massage);
         void set_massage(std::string massage);
         void print_massage();
         void print_client();
         std::string get_message();
+        void clear_massage();
 
 
 };

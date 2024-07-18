@@ -76,7 +76,6 @@ bool client::set_authenticated()
     std::string line;
     if (this->is_authenticated == true)
     {
-        std::cout << this->nickname << " is authenticated" << std::endl;
         return (true);
     }else
     { 
@@ -86,8 +85,8 @@ bool client::set_authenticated()
         
    
 
-        std::cout << "---------------vvv--------------------" << std::endl;
-        std::cout << "the size of lines : " << lines.size() << std::endl;
+        // std::cout << "--------------- not authonticatef --------------------" << std::endl;
+        // std::cout << "the size of lines : " << lines.size() << std::endl;
         for (unsigned int i = 0; i < lines.size(); i++)
         {
         //    std::cout << lines[i] << std::endl;
@@ -120,9 +119,9 @@ bool client::set_authenticated()
                     this->is_authenticated = true;
                     return (true);
                 }
-        print_client();
+        // print_client();
 
-        std::cout << "---------------vvv--------------------" << std::endl;
+        // std::cout << "---------------  not authonticatef  --------------------" << std::endl;
 
 
 
@@ -155,7 +154,7 @@ void client::set_client_pfd(pollfd client_pfd)
 
 
 
-void client::set_massage(std::string massage)
+void client::set_massage_for_auth(std::string massage)
 {
     this->massage = this->massage + massage;
 }
@@ -181,4 +180,15 @@ void client::print_client()
     std::cout << "realname : " << this->realname << std::endl;
     std::cout << "password sabmited : " << this->sabmit_password << std::endl;
     std::cout << "password : " << this->password << std::endl;
+}
+
+
+void client::clear_massage()
+{
+    this->massage = "";
+}
+
+void client::set_massage(std::string massage)
+{
+    this->massage = massage;
 }

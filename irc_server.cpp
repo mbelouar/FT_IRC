@@ -70,21 +70,27 @@ int main(int argc, char *argv[])
                         {
                             if ((clients[l].get_client_pfd().fd == fds[i].fd))
                             {
-                                clients[l].set_massage(buffer);
-
-                                // clients[l].print_massage();
-
                                 if (clients[l].set_authenticated() == true)
                                 {
-                                    std::cout << clients[l].get_client_pfd().fd << " is authenticated" << std::endl;
-                                    clients[l].print_client();
-
+                                    clients[l].set_massage(buffer);
                                     // work will bw done here 
                                     irc_server.command(fds[i].fd);
-                                }
+
+                                    // std::cout << clients[l].get_message();
+
+
+                                 }
                                 else
                                 {
-                                    std::cout << clients[l].get_client_pfd().fd << " is not authenticated" << std::endl;
+                                    clients[l].set_massage_for_auth(buffer);
+                                    // std::cout << clients[l].get_client_pfd().fd << " is not authenticated" << std::endl;
+                                    if (clients[l].set_authenticated() == true)
+                                    {
+                                        std::cout << "now is lol" << std::endl;
+                                        clients[l].clear_massage();
+                                        std::cout << clients[l].get_message() << std::endl;
+                                    }
+                                    
                                 }
                             }
                             l++;
