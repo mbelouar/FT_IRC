@@ -1,5 +1,7 @@
 #include "client.hpp"
 
+std::vector<pollfd> client::fds;
+std::vector<client> client::clients;
 
 client::client()
 {
@@ -140,7 +142,7 @@ void client::set_registered(bool is_registered)
     this->is_registered = is_registered;
 }
 
-pollfd client::get_client_pfd()
+pollfd client::get_client_pfd() const 
 {
     return this->client_pfd;
 }
@@ -192,3 +194,6 @@ void client::set_massage(std::string massage)
 {
     this->massage = massage;
 }
+
+std::vector<pollfd>& client::get_fds() { return fds; }
+std::vector<client>& client::get_clients() { return clients; }

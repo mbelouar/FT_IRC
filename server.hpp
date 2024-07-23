@@ -18,8 +18,8 @@ class Server
         int sockfd;
         struct addrinfo hints, *server;
         std::vector<pollfd> fds;
-         std::map<std::string , Channel> channels;
-         std::map<int, client> _clients;
+        std::map<std::string , Channel> channels;
+        //  std::map<int, client> _clients;
        
     public :
         Server(std::string ip, std::string port);
@@ -36,6 +36,8 @@ class Server
          void setupChannel(const std::string &channelName, int fd, const std::string &password);
          void JoinMessage(int fd, const std::string &channelName);
          void command(int fd);
+         std::string getClientMessage(int fd);
+         std::string getClientNickname(int fd);
 
         
 };

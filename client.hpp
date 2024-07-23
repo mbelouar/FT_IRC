@@ -20,6 +20,8 @@ class client
         bool is_registered;
         std::string massage;
         int index;
+        static std::vector<pollfd> fds;
+        static std::vector<client> clients;
 
     public :
         client();
@@ -32,7 +34,7 @@ class client
         void set_registered(bool is_registered);
         std::string getNickname() const;
         std::string getUsername() const;
-        pollfd get_client_pfd();
+        pollfd get_client_pfd() const;
         void set_client_pfd(pollfd client_pfd);
         void set_massage_for_auth(std::string massage);
         void set_massage(std::string massage);
@@ -40,6 +42,8 @@ class client
         void print_client();
         std::string get_message();
         void clear_massage();
+        static std::vector<pollfd>& get_fds();
+        static std::vector<client>& get_clients();
 
 
 };

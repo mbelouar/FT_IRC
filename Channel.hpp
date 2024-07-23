@@ -15,7 +15,6 @@ class Channel {
         std::vector<int>      operators;
         std::string           chPassword;
         std::map<int, client> inviteList;
-        // std::map<std::string , Channel> channels;
         int                   channelType; 
         int                   hasPassword;
 

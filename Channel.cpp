@@ -7,13 +7,14 @@ Channel::Channel() {
     channelType = 0;
     hasPassword = 0;
 }
-Channel::Channel(std::string channelName , int chType) {
+Channel::Channel(std::string channelName, int chType) {
     name = channelName;
-    topic = "";
+    topic = "No topic";  // Default topic value
     chPassword = "";
     channelType = chType;
     hasPassword = 0;
 }
+
 
 Channel::Channel(const Channel &copy) {
     name = copy.name;

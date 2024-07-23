@@ -25,104 +25,169 @@ std::vector<std::string> split(std::string line, char c) {
 }
 
 void Server::setupChannel(const std::string &channelName, int fd, const std::string &password) {
-    Channel newChannel;
-    newChannel.setName(channelName);
-    newChannel.setTopic("No topic");
-    newChannel.setClients(fd, _clients[fd].getNickname());
-    newChannel.setOperators(fd);
-
-    if (password.empty()) {
-        newChannel.setChannelType(0);
-        newChannel.setHasPassword(0);
+    if (channels.find(channelName) == channels.end()) {
+        Channel newChannel(channelName, 0);  
+        channels[channelName] = newChannel;
     } else {
-        newChannel.setChannelType(1);
-        newChannel.setHasPassword(1);
-        newChannel.setChPassword(password);
+        // Ensure not to reset the topic if the channel already exists
+        Channel &channel = channels[channelName];
+        if (channel.getTopic() == "No topic") {
+            channel.setTopic("No topic");
+        }
     }
 
-    channels[channelName] = newChannel;
+    // Additional setup code
+    Channel &channel = channels[channelName];
+    channel.setClients(fd, getClientNickname(fd));
+    if (password.empty()) {
+        channel.setChannelType(0);  // Public
+        channel.setHasPassword(0);
+    } else {
+        channel.setChannelType(1);  // Password protected
+        channel.setHasPassword(1);
+        channel.setChPassword(password);
+    }
+
+    JoinMessage(fd, channelName);
 }
+
+
 
 
 void Server::JoinMessage(int fd, const std::string &channelName) {
-    std::string message = ":" + getNameId(fd) + " 332 JOIN :" + channels[channelName].getTopic() + "\n";
-    sendMessage(fd, message);
+    if (channels.find(channelName) != channels.end()) {
+        std::string globmsg = "";
+        std::string topic = channels[channelName].getTopic();  // Get topic
+        std::string message = ":" + getClientNickname(fd) + "!" + getClientNickname(fd) + "@" + "127.0.0.1 JOIN " + channelName + " * :realname\r\n";
+        globmsg += message;
+        // :Aurora.AfterNET.Org 353 aet-tass = #test :@aet-tass!aet-tass@88ABE6.25BF1D.D03F86.88C9BD.IP
+        std::string message2 = ":localhost 353 " + getClientNickname(fd) + " = " + channelName + " :@" + getClientNickname(fd) + "!" + getClientNickname(fd) + "@127.0.0.1\r\n";
+        globmsg += message2;
+        // :Aurora.AfterNET.Org 366 aet-tass #test :End of /NAMES list.
+        std::string message3 = ":localhost 366 " + getClientNickname(fd) + " " + channelName + " :End of /NAMES list.\r\n";
+        globmsg += message3;
+        // :Aurora.AfterNET.Org 324 aet-tass #test +tn 
+        std::string message4 = ":localhost 324 " + getClientNickname(fd) + " " + channelName + " +tn\r\n";
+        globmsg += message4;
+        //  :Aurora.AfterNET.Org 329 aet-tass #test 1721765133
+        std::string message5 = ":localhost 329 " + getClientNickname(fd) + " " + channelName + " 1721765133\r\n";
+        globmsg += message5;
+        // :Aurora.AfterNET.Org 354 aet-tass 152 #test aet-tass 88ABE6.25BF1D.D03F86.88C9BD.IP *.afternet.org aet-tass H@x 0 :realnam
+        std::string message6 = ":localhost 354 " + getClientNickname(fd) + " 152 " + channelName + " " + getClientNickname(fd) + "127.0.0.1 *.localhost " + getClientNickname(fd) + " H@x 0 :realname\r\n";
+        globmsg += message6;
+        //  :Aurora.AfterNET.Org 315 aet-tass #test :End of /WHO list.
+        std::string message7 = ":localhost 315 " + getClientNickname(fd) + " " + channelName + " :End of /WHO list.\r\n";
+        globmsg += message7;
+        
+        
+        
+        // std::string message = ":" + getNameId(fd) + " 332 JOIN " + channelName + " :" + topic + "\n";
+        sendMessage(fd, globmsg);
+    } else {
+        std::string globmsg = ":" + getNameId(fd) + " 403 " + channelName + " :No such channel\n";
+        sendMessage(fd, globmsg);
+    }
 }
 
+
+
 std::string Server::getNameId(int fd) {
-    std::map<int, client>::iterator it = _clients.find(fd);
-    if (it != _clients.end()) {
-        return it->second.getNickname();
+    std::vector<client>& clients = client::get_clients();
+    for (std::vector<client>::iterator it = clients.begin(); it != clients.end(); ++it) {
+        if (it->get_client_pfd().fd == fd) {
+            return it->getNickname();
+        }
     }
     std::string message = ":" + std::to_string(fd) + " 401 * :No such nick/channel\n";  
     sendMessage(fd, message);
     return "ERROR"; 
 }
 
+class IsClientWithFd {
+public:
+    IsClientWithFd(int fd) : fd_(fd) {}
+    bool operator()(const client& c) const {
+        return c.get_client_pfd().fd == fd_;
+    }
+private:
+    int fd_;
+};
 void Server::joinCmd(std::vector<std::string> &param, int fd) {
-    // Check if the param vector is empty, or the first parameter does not start with '#',
-    // or if the first parameter is just '#' with no other characters.
-    if (param.empty() || param[0][0] != '#' || (param[0][0] == '#' && param[0].size() == 1)) {
-        // Construct an error message indicating "Not enough parameters" and send it to the client.
+    // Debugging output for received parameters
+    std::cout << "Received /join command with parameters: ";
+    for (size_t i = 0; i < param.size(); ++i) {
+        std::cout << param[i] << " ";
+    }
+    std::cout << std::endl;
+
+    // Check if the param vector is empty or invalid
+    if (param.empty() || param[0][0] != '#' || (param[0].size() == 1)) {
         std::string message = ":" + getNameId(fd) + " 461 JOIN :Not enough parameters\n";
         sendMessage(fd, message);
+        std::cout << "Error: Not enough parameters or invalid channel name." << std::endl;
         return;
     }
 
-    // Split the first parameter by commas to get the channel names.
+    // Split the parameters
     std::vector<std::string> chn = split(param[0], ',');
     std::vector<std::string> key;
-    // If there are two parameters, split the second parameter by commas to get the keys.
     if (param.size() == 2) {
         key = split(param[1], ',');
     }
 
-    // Loop through each channel name.
+    std::cout << "Channel names to join: ";
     for (size_t i = 0; i < chn.size(); ++i) {
-        // Find the channel in the channels map.
+        std::cout << chn[i] << " ";
+    }
+    std::cout << std::endl;
+
+    std::cout << "Keys provided: ";
+    for (size_t i = 0; i < key.size(); ++i) {
+        std::cout << key[i] << " ";
+    }
+    std::cout << std::endl;
+
+    // Loop through each channel name
+    for (size_t i = 0; i < chn.size(); ++i) {
         std::map<std::string, Channel>::iterator it = channels.find(chn[i]);
         bool channelCreated = (it == channels.end());
 
-        // If the channel doesn't exist, create it and send a join message.
+        // If channel doesn't exist, create it
         if (channelCreated) {
             setupChannel(chn[i], fd, (param.size() == 2 && key.size() > i) ? key[i] : "");
-            JoinMessage(fd, chn[i]);
+
+            // JoinMessage(fd, chn[i]);
             continue;
         }
 
         Channel &channel = it->second;
 
-        // Check if the client is already in the channel.
-        if (channel.isClientInChannel(fd) == 1) {
+        // Check if client is already in the channel
+        if (channel.isClientInChannel(fd)) {
             std::string message = ":" + getNameId(fd) + " 443 * :You are already in this channel\n";
             sendMessage(fd, message);
             continue;
         }
 
-        // If the channel is invite-only or has a password, handle those cases.
+        // Handle invite-only or password-protected channels
         if (channel.getChannelType() == 1) {
-            // If the channel is invite-only and the client is not invited, send an error message.
             if (channel.getInvitedList().empty() && param.size() != 2) {
                 std::string message = ":" + getNameId(fd) + " 473 * Cannot join channel (+i)\n";
                 sendMessage(fd, message);
                 continue;
             }
 
-            // If the client is invited, add them to the channel and send a join message.
             if (channel.isClientInvited(fd)) {
-                channel.setClients(fd, _clients[fd].getNickname());
+                channel.setClients(fd, getClientNickname(fd));
                 JoinMessage(fd, chn[i]);
                 continue;
             }
 
-            // If the channel has a password, check the provided key.
             if (channel.getHasPassword() == 1) {
-                // If the provided key matches the channel password, add the client to the channel.
                 if ((key.size() > i && channel.getChPassword() == key[i]) || key.empty()) {
-                    channel.setClients(fd, _clients[fd].getNickname());
+                    channel.setClients(fd, getClientNickname(fd));
                     JoinMessage(fd, chn[i]);
                 } else {
-                    // If the key doesn't match, send an error message.
                     std::string message = ":" + getNameId(fd) + " 475 * Cannot join channel (+k)\n";
                     sendMessage(fd, message);
                 }
@@ -130,28 +195,40 @@ void Server::joinCmd(std::vector<std::string> &param, int fd) {
             }
         }
 
-        // If the channel has a password, check the provided key.
+        // Handle password for existing channels
         if (channel.getHasPassword() == 1) {
-            // If the provided key matches the channel password, add the client to the channel.
             if (key.size() > i && channel.getChPassword() == key[i]) {
-                channel.setClients(fd, _clients[fd].getNickname());
+                channel.setClients(fd, getClientNickname(fd));
                 JoinMessage(fd, chn[i]);
             } else {
-                // If the key doesn't match, send an error message.
                 std::string message = ":" + getNameId(fd) + " 475 * Cannot join channel (+k)\n";
                 sendMessage(fd, message);
             }
             continue;
         }
 
-        // If none of the above conditions are met, add the client to the channel and send a join message.
-        channel.setClients(fd, _clients[fd].getNickname());
+        // Add the client to the channel and send a join message
+        channel.setClients(fd, getClientNickname(fd));
         JoinMessage(fd, chn[i]);
     }
 }
 
+
+
+std::string Server::getClientNickname(int fd) {
+    std::vector<client>& clients = client::get_clients();
+    std::vector<client>::iterator it = std::find_if(clients.begin(), clients.end(), IsClientWithFd(fd));
+    return (it != clients.end()) ? it->getNickname() : "Unknown";
+}
+
+std::string Server::getClientMessage(int fd) {
+    std::vector<client>& clients = client::get_clients();
+    std::vector<client>::iterator it = std::find_if(clients.begin(), clients.end(), IsClientWithFd(fd));
+    return (it != clients.end()) ? it->get_message() : "";
+}
+
 void Server::command(int fd) {
-    std::string line = _clients[fd].get_message();
+    std::string line = getClientMessage(fd);
     std::istringstream stream(line);
     std::string command;
     std::vector<std::string> res;
@@ -164,10 +241,10 @@ void Server::command(int fd) {
         res.push_back(arg);
     }
 
-    if (command == "join") {
+    if (command.compare("join") == 0) {
         joinCmd(res, fd);
     } else {
-        std::string msg = "421 " + _clients[fd].getNickname() + " " + command + " :Unknown command\n";
+        std::string msg = "421 " + getClientNickname(fd) + " " + command + " :Unknown command\n";
         sendMessage(fd, msg);
     }
 }
