@@ -222,8 +222,6 @@ void Server::command(int fd) {
         res.push_back(arg);
     }
 
-    checkCommand(command, res, fd);
-
     if (command.compare("join") == 0) {
         joinCmd(res, fd);
     } else {
