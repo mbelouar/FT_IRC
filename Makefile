@@ -1,22 +1,34 @@
-NAME=FT_IRC
+# Colors
+WHITE = \033[1;37m
+RED = \033[1;31m
+GREEN = \033[1;32m
+YELLOW = \033[1;33m
+RESET = \033[0m
 
-CC = c++
-FLAGS = -Wall -Wextra -Werror -std=c++98
-SRC = irc_server.cpp server.cpp client.cpp cmd.cpp Channel.cpp
-OBJ = $(SRC:.cpp=.o)
+NAME    = ircserv  # Change this to your desired executable name
+CC      = c++                    # Change this if your compiler is not g++
+CFLAGS  = -Wall -Wextra -Werror -std=c++98
+SRC     = irc_server.cpp server.cpp client.cpp cmd.cpp Channel.cpp joinCmd.cpp utils.cpp # Add all source files here
+OBJ     = ${SRC:.cpp=.o}
 
-all: $(NAME)
+all: ${NAME}
 
-$(NAME): $(OBJ)
-	$(CC) $(FLAGS) $(OBJ) -o $(NAME)
+${OBJ}: %.o: %.cpp
+	@${CC} ${CFLAGS} -c $< -o $@
 
-%.o: %.cpp
-	$(CC) $(FLAGS) -c $< -o $@
+${NAME}: ${OBJ}
+	@echo "$(YELLOW)Compiling $(NAME)...⏳$(RESET)"
+	@${CC} ${CFLAGS} -o ${NAME} ${OBJ}
+	@echo "$(GREEN)Compilation completed ✅$(RESET)"
 
 clean:
-	rm -f $(OBJ)
+	@${RM} ${OBJ}
+	@echo "$(RED)Obj_files removed.$(RESET)"
 
 fclean: clean
-	rm -f $(NAME)
+	@${RM} ${NAME}
+	@echo "$(RED)Executable removed.$(RESET)"
 
 re: fclean all
+
+.PHONY: all clean fclean re

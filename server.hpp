@@ -33,12 +33,20 @@ class Server
         void joinCmd(std::vector<std::string> &param, int fd);
         std::string getNameId(int fd);
         void joinMessage(int fd, const std::string &channelName);
-         void setupChannel(const std::string &channelName, int fd, const std::string &password);
-         void JoinMessage(int fd, const std::string &channelName);
-         void command(int fd);
-         std::string getClientMessage(int fd);
-         std::string getClientNickname(int fd);
+        void setupChannel(const std::string &channelName, int fd, const std::string &password);
+        void JoinMessage(int fd, const std::string &channelName);
+        void command(int fd);
+        std::string getClientMessage(int fd);
+        std::string getClientNickname(int fd);
 
-        
+        class IsClientWithFd {
+            public:
+                IsClientWithFd(int fd) : fd_(fd) {}
+                bool operator()(const client& c) const {
+                    return c.get_client_pfd().fd == fd_;
+                }
+            private:
+                int fd_;
+        };
 };
 #endif

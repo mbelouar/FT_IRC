@@ -53,8 +53,6 @@ class Channel {
 
         const std::map<int, client> &getClientsFromChannel() const;
 
-
-
 };
 
 
