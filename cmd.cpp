@@ -47,12 +47,7 @@ void Server::setupChannel(const std::string &channelName, int fd, const std::str
         channel.setHasPassword(1);
         channel.setChPassword(password);
     }
-
-    JoinMessage(fd, channelName);
 }
-
-
-
 
 void Server::JoinMessage(int fd, const std::string &channelName) {
     if (channels.find(channelName) != channels.end()) {
@@ -60,36 +55,24 @@ void Server::JoinMessage(int fd, const std::string &channelName) {
         std::string topic = channels[channelName].getTopic();  // Get topic
         std::string message = ":" + getClientNickname(fd) + "!" + getClientNickname(fd) + "@" + "127.0.0.1 JOIN " + channelName + " * :realname\r\n";
         globmsg += message;
-        // :Aurora.AfterNET.Org 353 aet-tass = #test :@aet-tass!aet-tass@88ABE6.25BF1D.D03F86.88C9BD.IP
-        std::string message2 = ":localhost 353 " + getClientNickname(fd) + " = " + channelName + " :@" + getClientNickname(fd) + "!" + getClientNickname(fd) + "@127.0.0.1\r\n";
+        std::string message2 = ":localhost 353 " + getClientNickname(fd) + " = " + channelName + " :@" + getClientNickname(fd) + "\r\n";
         globmsg += message2;
-        // :Aurora.AfterNET.Org 366 aet-tass #test :End of /NAMES list.
         std::string message3 = ":localhost 366 " + getClientNickname(fd) + " " + channelName + " :End of /NAMES list.\r\n";
         globmsg += message3;
-        // :Aurora.AfterNET.Org 324 aet-tass #test +tn 
-        std::string message4 = ":localhost 324 " + getClientNickname(fd) + " " + channelName + " +tn\r\n";
-        globmsg += message4;
-        //  :Aurora.AfterNET.Org 329 aet-tass #test 1721765133
-        std::string message5 = ":localhost 329 " + getClientNickname(fd) + " " + channelName + " 1721765133\r\n";
-        globmsg += message5;
-        // :Aurora.AfterNET.Org 354 aet-tass 152 #test aet-tass 88ABE6.25BF1D.D03F86.88C9BD.IP *.afternet.org aet-tass H@x 0 :realnam
-        std::string message6 = ":localhost 354 " + getClientNickname(fd) + " 152 " + channelName + " " + getClientNickname(fd) + "127.0.0.1 *.localhost " + getClientNickname(fd) + " H@x 0 :realname\r\n";
-        globmsg += message6;
-        //  :Aurora.AfterNET.Org 315 aet-tass #test :End of /WHO list.
-        std::string message7 = ":localhost 315 " + getClientNickname(fd) + " " + channelName + " :End of /WHO list.\r\n";
-        globmsg += message7;
-        
-        
-        
-        // std::string message = ":" + getNameId(fd) + " 332 JOIN " + channelName + " :" + topic + "\n";
+        // std::string message4 = ":localhost 324 " + getClientNickname(fd) + " " + channelName + " +tn\r\n";
+        // globmsg += message4;
+        // std::string message5 = ":localhost 329 " + getClientNickname(fd) + " " + channelName + " 1721765133\r\n";
+        // globmsg += message5;
+        // std::string message6 = ":localhost 354 " + getClientNickname(fd) + " 152 " + channelName + " " + getClientNickname(fd) + "127.0.0.1 *.localhost " + getClientNickname(fd) + " H@x 0 :realname\r\n";
+        // globmsg += message6;
+        // std::string message7 = ":localhost 315 " + getClientNickname(fd) + " " + channelName + " :End of /WHO list.\r\n";
+        // globmsg += message7;
         sendMessage(fd, globmsg);
     } else {
         std::string globmsg = ":" + getNameId(fd) + " 403 " + channelName + " :No such channel\n";
         sendMessage(fd, globmsg);
     }
 }
-
-
 
 std::string Server::getNameId(int fd) {
     std::vector<client>& clients = client::get_clients();
@@ -112,6 +95,7 @@ public:
 private:
     int fd_;
 };
+
 void Server::joinCmd(std::vector<std::string> &param, int fd) {
     // Debugging output for received parameters
     std::cout << "Received /join command with parameters: ";
@@ -155,8 +139,7 @@ void Server::joinCmd(std::vector<std::string> &param, int fd) {
         // If channel doesn't exist, create it
         if (channelCreated) {
             setupChannel(chn[i], fd, (param.size() == 2 && key.size() > i) ? key[i] : "");
-
-            // JoinMessage(fd, chn[i]);
+            JoinMessage(fd, chn[i]);
             continue;
         }
 
@@ -213,8 +196,6 @@ void Server::joinCmd(std::vector<std::string> &param, int fd) {
     }
 }
 
-
-
 std::string Server::getClientNickname(int fd) {
     std::vector<client>& clients = client::get_clients();
     std::vector<client>::iterator it = std::find_if(clients.begin(), clients.end(), IsClientWithFd(fd));
@@ -240,6 +221,8 @@ void Server::command(int fd) {
     while (stream >> arg) {
         res.push_back(arg);
     }
+
+    checkCommand(command, res, fd);
 
     if (command.compare("join") == 0) {
         joinCmd(res, fd);
