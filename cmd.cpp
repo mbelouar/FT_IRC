@@ -32,8 +32,8 @@ void Server::command(int fd) {
         kickCmd(res, fd);
     else if (command.compare("topic") == 0)
         topicCmd(res, fd);
-    else if (command.compare("privmsg") == 0)
-        privmsgCmd(res, fd);
+    // else if (command.compare("privmsg") == 0)
+    //     privmsgCmd(res, fd);
     else {
         std::string msg = "421 " + getClientNickname(fd) + " " + command + " :Unknown command\n";
         sendMessage(fd, msg);
