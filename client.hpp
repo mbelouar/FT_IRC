@@ -27,23 +27,24 @@ class client
         client();
         client(pollfd client_pfd, std::string password);
         ~client();
-        void set_nickname(std::string nickname);
-        void set_username(std::string username);
-        void set_realname(std::string realname);
-        bool set_authenticated();
-        void set_registered(bool is_registered);
-        std::string getNickname() const;
-        std::string getUsername() const;
-        pollfd get_client_pfd() const;
-        void set_client_pfd(pollfd client_pfd);
-        void set_massage_for_auth(std::string massage);
-        void set_massage(std::string massage);
-        void print_massage();
-        void print_client();
-        std::string get_message();
-        void clear_massage();
-        static std::vector<pollfd>& get_fds();
-        static std::vector<client>& get_clients();
+
+        pollfd                          get_client_pfd() const;
+        std::string                     getNickname() const;
+        std::string                     getUsername() const;
+        std::string                     get_message();
+        void                            set_nickname(std::string nickname);
+        void                            set_username(std::string username);
+        void                            set_realname(std::string realname);
+        bool                            set_authenticated();
+        void                            set_registered(bool is_registered);
+        void                            set_client_pfd(pollfd client_pfd);
+        void                            set_massage_for_auth(std::string massage);
+        void                            set_massage(std::string massage);
+        void                            print_massage();
+        void                            print_client();
+        void                            clear_massage();
+        static std::vector<pollfd>&     get_fds();
+        static std::vector<client>&     get_clients();
 
 
 };

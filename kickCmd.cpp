@@ -42,22 +42,7 @@ void Server::kickCmd(std::vector<std::string>& args, int fd) {
         std::cout << "Kicking user \"" << userToKick << "\" is on the channel \"" << channelName + "\"" << std::endl;
     }
 
-   
-    // std::cout << "Channel '" << it->first << "' BEFORE kick:" << std::endl;
-    // const std::map<int, client>& clientsBeforeKick = it->second.getClientsFromChannel();
-    // std::map<int, client>::const_iterator itClientBefore;
-    // for (itClientBefore = clientsBeforeKick.begin(); itClientBefore != clientsBeforeKick.end(); ++itClientBefore) {
-    //     std::cout << "Client ID: " << itClientBefore->first << ", Nickname: " << itClientBefore->second.getNickname() << std::endl;
-    // }
-
     channel.removeClient(fdToKick);
-
-    // std::cout << "Channel '" << it->first << "' AFTER kick:" << std::endl;
-    // const std::map<int, client>& clientsAfterKick = it->second.getClientsFromChannel();
-    // std::map<int, client>::const_iterator itClientAfter;
-    // for (itClientAfter = clientsAfterKick.begin(); itClientAfter != clientsAfterKick.end(); ++itClientAfter) {
-    //     std::cout << "Client ID: " << itClientAfter->first << ", Nickname: " << itClientAfter->second.getNickname() << std::endl;
-    // }
 
 
     std::string msg = ":" + getClientNickname(fd) + " KICK " + channelName + " " + userToKick + " :Kicked by " + getClientNickname(fd) + "\n";

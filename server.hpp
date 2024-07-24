@@ -19,7 +19,7 @@ class Server
         struct addrinfo hints, *server;
         std::vector<pollfd> fds;
         std::map<std::string , Channel> channels;
-        //  std::map<int, client> _clients;
+        // std::map<int, client> _clients;
        
     public :
         Server(std::string ip, std::string port);
@@ -31,6 +31,8 @@ class Server
         ~Server();
 
         void joinCmd(std::vector<std::string> &param, int fd);
+        void privmsgCmd(std::vector<std::string>& args, int fd);
+        int getClientFdByNickname(const std::string& nickname);
         void kickCmd(std::vector<std::string> &param, int fd);
         void topicCmd(std::vector<std::string> &param, int fd);
         std::string getNameId(int fd);
