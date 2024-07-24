@@ -32,6 +32,8 @@ void Server::command(int fd) {
         kickCmd(res, fd);
     else if (command.compare("topic") == 0)
         topicCmd(res, fd);
+    else if (command.compare("who") == 0)
+        whoCmd(res, fd);
     // else if (command.compare("privmsg") == 0)
     //     privmsgCmd(res, fd);
     else {

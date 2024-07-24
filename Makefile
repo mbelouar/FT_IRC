@@ -8,7 +8,7 @@ RESET = \033[0m
 NAME    = ircserv  # Change this to your desired executable name
 CC      = c++                    # Change this if your compiler is not g++
 CFLAGS  = -Wall -Wextra -Werror -std=c++98
-SRC     = irc_server.cpp server.cpp client.cpp cmd.cpp Channel.cpp joinCmd.cpp utils.cpp kickCmd.cpp topicCmd.cpp #privmsgCmd.cpp # Add all source files here
+SRC     = irc_server.cpp server.cpp client.cpp cmd.cpp Channel.cpp joinCmd.cpp utils.cpp kickCmd.cpp topicCmd.cpp whoCmd.cpp #privmsgCmd.cpp # Add all source files here
 OBJ     = ${SRC:.cpp=.o}
 
 all: ${NAME}
