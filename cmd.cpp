@@ -25,10 +25,10 @@ void Server::command(int fd) {
         joinCmd(res, fd);
     else if (command.compare("kick") == 0)
         kickCmd(res, fd);
+    else if (command.compare("topic") == 0)
+        topicCmd(res, fd);
     // else if (command.compare("privmsg") == 0)
     //     privmsgCmd(res, fd);
-    // else if (command.compare("topic") == 0)
-    //     topicCmd(res, fd);
     else {
         std::string msg = "421 " + getClientNickname(fd) + " " + command + " :Unknown command\n";
         sendMessage(fd, msg);
