@@ -31,6 +31,7 @@ class Server
         ~Server();
 
         void joinCmd(std::vector<std::string> &param, int fd);
+        void kickCmd(std::vector<std::string> &param, int fd);
         std::string getNameId(int fd);
         void joinMessage(int fd, const std::string &channelName);
         void setupChannel(const std::string &channelName, int fd, const std::string &password);

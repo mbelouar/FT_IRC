@@ -154,3 +154,7 @@ bool Channel::isClientInvited(int clientId) const{
     bool isInvited = (inviteList.count(clientId) > 0);
     return isInvited;
 }
+
+void Channel::removeClient(int fd) {
+    clients.erase(fd);
+}
