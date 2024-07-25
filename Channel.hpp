@@ -37,21 +37,20 @@ class Channel {
         void setInvitedList(int id, client &c);
 
         // getters :
-        std::string getName();
-        std::string getTopic();
-        std::vector<int> &getOperators();
-        std::string getChPassword();
-        std::map<int, client>::const_iterator beginClientIter() const;
-        std::map<int, client>::const_iterator endClientIter() const;
-        int getChannelType();
-        int getClientID(const std::string &nickname) const;
-        int isClientInChannel(int fd);
-        int getHasPassword() const;
-        size_t getClientNb() const;
-        std::map<int, client> getInvitedList() const;
-        bool isClientInvited(int clientId) const;
-
-        const std::map<int, client> &getClientsFromChannel() const;
+        std::string                             getName();
+        std::string                             getTopic();
+        std::vector<int>                        &getOperators();
+        std::string                             getChPassword();
+        std::map<int, client>::const_iterator   beginClientIter() const;
+        std::map<int, client>::const_iterator   endClientIter() const;
+        int                                     getChannelType();
+        int                                     getClientID(const std::string &nickname) const;
+        int                                     isClientInChannel(int fd);
+        int                                     getHasPassword() const;
+        size_t                                  getClientNb() const;
+        std::map<int, client>                   getInvitedList() const;
+        bool                                    isClientInvited(int clientId) const;
+        const std::map<int, client>             &getClientsFromChannel() const;
 
         void removeClient(int fd);
 

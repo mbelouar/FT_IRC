@@ -19,6 +19,7 @@ class Server
         struct addrinfo hints, *server;
         std::vector<pollfd> fds;
         std::map<std::string , Channel> channels;
+        std::map<std::string, client> clients;
         // std::map<int, client> _clients;
        
     public :

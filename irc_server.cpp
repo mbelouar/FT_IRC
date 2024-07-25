@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
                                     client::get_clients()[l].set_massage(buffer);
                                     // work will be done here 
                                     irc_server.command(client::get_fds()[i].fd);
-
+                                    // print the client name and message
                                     std::cout << "we are receiving message from authenticated client: " << client::get_clients()[l].get_message() << std::endl;
                                 }
                                 else

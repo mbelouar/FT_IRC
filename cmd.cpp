@@ -21,11 +21,11 @@ void Server::command(int fd) {
     while (stream >> arg) {
         res.push_back(arg);
     }
-    // int size = res.size();
-    // std::cout << "size of res is : " << size << std::endl;
-    // for (int i = 0; i < size; i++) {
-    //     std::cout << "res[" << i << "] = " << res[i] << std::endl;
-    // }
+    int size = res.size();
+    std::cout << "size of res is : " << size << std::endl;
+    for (int i = 0; i < size; i++) {
+        std::cout << "res[" << i << "] = " << res[i] << std::endl;
+    }
     if (command.compare("join") == 0) 
         joinCmd(res, fd);
     else if (command.compare("kick") == 0)
@@ -34,8 +34,12 @@ void Server::command(int fd) {
         topicCmd(res, fd);
     else if (command.compare("who") == 0)
         whoCmd(res, fd);
-    // else if (command.compare("privmsg") == 0)
-    //     privmsgCmd(res, fd);
+    // else if (command.compare("nick") == 0)
+    //     nickCmd(res, fd);
+    // else if (command.compare("mode") == 0)
+    //     modeCmd(res, fd);
+    else if (command.compare("privmsg") == 0)
+        privmsgCmd(res, fd);
     else {
         std::string msg = "421 " + getClientNickname(fd) + " " + command + " :Unknown command\n";
         sendMessage(fd, msg);
