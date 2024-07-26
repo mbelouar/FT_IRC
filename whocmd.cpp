@@ -25,8 +25,7 @@ void Server::whoCmd(std::vector<std::string>& args, int fd) {
         Channel& channel = it->second;
         std::string msg;
 
-        // Start with a header message
-        msg = ":" + getClientNickname(fd) + " 353 " + getClientNickname(fd) + " = " + channelName + " :";
+        msg = ":" + getClientHostName(fd) + " 353 " + getClientNickname(fd) + " = " + channelName + " :";
 
         // List all clients in the channel
         bool first = true;

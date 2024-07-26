@@ -21,11 +21,11 @@ void Server::command(int fd) {
     while (stream >> arg) {
         res.push_back(arg);
     }
-    int size = res.size();
-    std::cout << "size of res is : " << size << std::endl;
-    for (int i = 0; i < size; i++) {
-        std::cout << "res[" << i << "] = " << res[i] << std::endl;
-    }
+    // int size = res.size();
+    // std::cout << "size of res is : " << size << std::endl;
+    // for (int i = 0; i < size; i++) {
+    //     std::cout << "res[" << i << "] = " << res[i] << std::endl;
+    // }
     if (command.compare("join") == 0) 
         joinCmd(res, fd);
     else if (command.compare("kick") == 0)
