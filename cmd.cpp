@@ -36,10 +36,10 @@ void Server::command(int fd) {
         whoCmd(res, fd);
     else if (command.compare("part") == 0)
         partCmd(res, fd);
-    // else if (command.compare("mode") == 0)
-    //     modeCmd(res, fd);
     else if (command.compare("privmsg") == 0)
         privmsgCmd(res, fd);
+    // else if (command.compare("mode") == 0)
+    //     modeCmd(res, fd);
     else {
         std::string msg = "421 " + getClientNickname(fd) + " " + command + " :Unknown command\n";
         sendMessage(fd, msg);

@@ -34,10 +34,10 @@ class Server
         void joinCmd(std::vector<std::string> &param, int fd);
         void privmsgCmd(std::vector<std::string>& args, int fd);
         void whoCmd(std::vector<std::string>& args, int fd);
-        int getClientFdByNickname(const std::string& nickname);
         void kickCmd(std::vector<std::string> &param, int fd);
         void topicCmd(std::vector<std::string> &param, int fd);
         void partCmd(std::vector<std::string>& args, int fd);
+        int getClientFdByNickname(const std::string& nickname);
         std::string getNameId(int fd);
         void joinMessage(int fd, const std::string &channelName);
         void setupChannel(const std::string &channelName, int fd, const std::string &password);

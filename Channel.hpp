@@ -11,11 +11,11 @@ class Channel {
     private:
         std::string           name;
         std::string           topic;
-        std::map<int, client> clients;
-        std::vector<int>      operators;
         std::string           chPassword;
+        std::vector<int>      operators;
+        std::map<int, client> clients;
         std::map<int, client> inviteList;
-        int                   channelType; 
+        int                   channelType;
         int                   hasPassword;
 
     public:
@@ -30,7 +30,7 @@ class Channel {
         void setTopic(std::string channelTopic);
         // void setClients(std::map<int, client> channelClients);
         void setClients(int id, const std::string &userName);
-        void setOperators(int& op);
+        void setOperators(int op);
         void setChPassword(std::string channelPassword);
         void setChannelType(int channelType);
         void setHasPassword(int hasPassword);

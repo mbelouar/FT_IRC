@@ -56,7 +56,7 @@ void Channel::setClients(int id, const std::string &userName) {
     clients[id].set_nickname(userName);
 }
 
-void Channel::setOperators(int& op) {
+void Channel::setOperators(int op) {
     operators.push_back(op);
 }
 

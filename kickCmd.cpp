@@ -20,7 +20,7 @@ void Server::kickCmd(std::vector<std::string>& args, int fd) {
 
     std::map<std::string, Channel>::iterator it = channels.find(channelName);
     if (it == channels.end()) {
-        std::string msg = "403 " + getClientNickname(fd) + " " + channelName + " :No such channel\n";
+        std::string msg = "403 " + getClientNickname(fd) + " " + channelName + " :No such channel\n\r";
         sendMessage(fd, msg);
         return;
     }
@@ -28,13 +28,13 @@ void Server::kickCmd(std::vector<std::string>& args, int fd) {
     Channel& channel = it->second;
     int fdToKick = channel.getClientID(userToKick);
     if (fdToKick == -1) {
-        std::string msg = "401 " + getClientNickname(fd) + " " + userToKick + " :No such nick/channel\n";
+        std::string msg = "401 " + getClientNickname(fd) + " " + userToKick + " :No such nick/channel\n\r";
         sendMessage(fd, msg);
         return;
     }
 
     if (!channel.isClientInChannel(fdToKick)) {
-        std::string msg = "441 " + getClientNickname(fd) + " " + userToKick + " " + channelName + " :They aren't on that channel\n";
+        std::string msg = "441 " + getClientNickname(fd) + " " + userToKick + " " + channelName + " :They aren't on that channel\n\r";
         sendMessage(fd, msg);
         return;
     }
@@ -45,6 +45,11 @@ void Server::kickCmd(std::vector<std::string>& args, int fd) {
     channel.removeClient(fdToKick);
 
 
-    std::string msg = ":" + getClientNickname(fd) + " KICK " + channelName + " " + userToKick + " :Kicked by " + getClientNickname(fd) + "\n";
+    std::string msg = ":" + getClientNickname(fd) + " KICK " + channelName + " " + userToKick + " :" + getClientNickname(fd) + "\n\r";
     sendMessage(fd, msg);
+
+    // Send the message to the client being kicked
+    std::string kickMsg = ":" + getClientNickname(fd) + "!" + getClientNickname(fd) + "@" + getClientHostName(fd) + " KICK " + channelName + " " + userToKick + " :" + getClientNickname(fd) + "\n\r";
+    sendMessage(fdToKick, kickMsg);
+
 }
