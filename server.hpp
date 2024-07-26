@@ -44,6 +44,7 @@ class Server
         void command(int fd);
         std::string getClientMessage(int fd);
         std::string getClientNickname(int fd);
+        std::string getClientHostName(int fd);
 
         class IsClientWithFd {
             public:

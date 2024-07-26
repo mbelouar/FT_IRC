@@ -19,7 +19,6 @@ client::client(pollfd client_pfd, std::string password)
     this->index = 0;
 }
 
-
 client::~client()
 {
 //     std::cout << "client with nickname " << this->nickname << " is destroyed" << std::endl;
@@ -69,23 +68,15 @@ std::vector<std::string> buffer_to_line(std::string buffer, std::string siparato
     return lines;
 }
 
-
-
-
-
 bool client::set_authenticated()
 {
     std::string line;
     if (this->is_authenticated == true)
     {
         return (true);
-    }else
-    { 
-        
+    }
+    else { 
         std::vector<std::string> lines = buffer_to_line(this->massage, "\r\n");
-
-        
-   
 
         // std::cout << "--------------- not authonticatef --------------------" << std::endl;
         // std::cout << "the size of lines : " << lines.size() << std::endl;
@@ -101,39 +92,43 @@ bool client::set_authenticated()
                 {
                     std::string username = lines[i].substr(5, lines[i].size());
                     this->set_username(username);
+
+
+                    // try to grt the hodt name { this->username = user_abdel-ou user_abdel-ou localhost :realname} try to get the host name
+
+                    size_t found1 = this->username.find(" ");
+                    if (found1 != std::string::npos) {
+                        size_t found2 = this->username.find(" ", found1 + 1);
+                        if (found2 != std::string::npos) {
+                     
+                            std::string tmp_realname = this->username.substr(found2 + 1, this->username.size());
+
+                            size_t found3 = tmp_realname.find(" ");
+                            if (found3 != std::string::npos) {
+                                std::string realname = tmp_realname.substr(0, found3);
+                                // std::cout << "realname : " << realname << std::endl;
+                                this->hostname = realname;
+
+                                // std::cout << "hostname : " << this->hostname << std::endl;
+
+                            }
+                        }
+                    }
+                    
                 }
 
                 if (lines[i].find("PASS") != std::string::npos)
                 {
-                    std::string password = lines[i].substr(5, lines[i].size());
-                    this->sabmit_password = password;
-                    if (this->password == password)
-                    {
-                        this->is_authenticated = true;
-                        this->password = "";
-                    }
+                    this->sabmit_password = lines[i].substr(5, lines[i].size());
+                    
                 }
-
-                
         }
-                if (this->nickname.size() > 0 && this->username.size() > 0)
+               if ((this->nickname.size() > 0) && (this->username.size() > 0) && (this->password == this->sabmit_password))
                 {
                     this->is_authenticated = true;
                     return (true);
                 }
-        // print_client();
-
-        // std::cout << "---------------  not authonticatef  --------------------" << std::endl;
-
-
-
-
-
-
-
-
     }
-
      return (false);      
 }
 
@@ -151,10 +146,6 @@ void client::set_client_pfd(pollfd client_pfd)
 {
     this->client_pfd = client_pfd;
 }
-
-
-
-
 
 void client::set_massage_for_auth(std::string massage)
 {
@@ -195,5 +186,12 @@ void client::set_massage(std::string massage)
     this->massage = massage;
 }
 
+
+std::string client::get_host_name()
+{
+    return this->hostname;
+}
+
 std::vector<pollfd>& client::get_fds() { return fds; }
 std::vector<client>& client::get_clients() { return clients; }
+

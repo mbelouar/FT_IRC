@@ -84,6 +84,12 @@ std::string Server::getClientMessage(int fd) {
     return (it != clients.end()) ? it->get_message() : "";
 }
 
+std::string Server::getClientHostName(int fd) {
+    std::vector<client>& clients = client::get_clients();
+    std::vector<client>::iterator it = std::find_if(clients.begin(), clients.end(), IsClientWithFd(fd));
+    return (it != clients.end()) ? it->get_host_name() : "";
+}
+
 std::string Server::getNameId(int fd) {
     std::vector<client>& clients = client::get_clients();
     for (std::vector<client>::iterator it = clients.begin(); it != clients.end(); ++it) {

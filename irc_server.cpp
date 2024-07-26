@@ -70,6 +70,8 @@ int main(int argc, char *argv[])
                                 if (client::get_clients()[l].set_authenticated() == true)
                                 {
                                     client::get_clients()[l].set_massage(buffer);
+                                    // print host name
+                                    // std::cout << client::get_clients()[l].get_host_name() << std::endl;
                                     // work will be done here 
                                     irc_server.command(client::get_fds()[i].fd);
                                     // print the client name and message

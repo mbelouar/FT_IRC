@@ -13,6 +13,7 @@ class client
         std::string nickname;
         std::string username;
         std::string realname;
+        std::string hostname;
         std::string password;
         std::string sabmit_password;
 
@@ -45,6 +46,7 @@ class client
         void                            clear_massage();
         static std::vector<pollfd>&     get_fds();
         static std::vector<client>&     get_clients();
+        std::string                     get_host_name();
 
 
 };
