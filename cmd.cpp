@@ -42,6 +42,8 @@ void Server::command(int fd) {
         nickCmd(res, fd);
     else if (command.compare("mode") == 0)
         modeCmd(res, fd);
+    else if (command.compare("quit") == 0)
+        quitCmd(res, fd);
     else {
         std::string msg = "421 " + getClientNickname(fd) + " " + command + " :Unknown command\n";
         sendMessage(fd, msg);
