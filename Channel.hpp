@@ -30,7 +30,7 @@ class Channel {
         void setTopic(std::string channelTopic);
         // void setClients(std::map<int, client> channelClients);
         void setClients(int id, const std::string &userName);
-        void setOperators(int op);
+        void setOperators(const std::vector<int>& op);
         void setChPassword(std::string channelPassword);
         void setChannelType(int channelType);
         void setHasPassword(int hasPassword);

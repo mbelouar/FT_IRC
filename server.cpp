@@ -101,3 +101,8 @@ std::string Server::getNameId(int fd) {
     sendMessage(fd, message);
     return "ERROR"; 
 }
+
+// bool Server::isClientModerator(Channel &ch, int clientID) {
+//     std::vector<int> operators = ch.getOperators();
+//     return std::find(operators.begin(), operators.end(), clientID) != operators.end();
+// }
