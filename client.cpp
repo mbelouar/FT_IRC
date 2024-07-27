@@ -49,6 +49,7 @@ std::string client::getUsername()const
 {
     return this->username;
 }
+
 std::vector<std::string> buffer_to_line(std::string buffer, std::string siparator)
 {
     std::vector<std::string> lines;
@@ -190,6 +191,22 @@ void client::set_massage(std::string massage)
 std::string client::get_host_name()
 {
     return this->hostname;
+}
+
+int client::getFd() const
+{
+    return this->client_pfd.fd;
+}
+
+void client::modify_client(int fd, const std::string& newNickname)
+{
+    std::vector<client>& clients = client::get_clients();
+    for (std::vector<client>::iterator it = clients.begin(); it != clients.end(); ++it) {
+        if (it->getFd() == fd) {
+            it->set_nickname(newNickname);
+            return;
+        }
+    }
 }
 
 std::vector<pollfd>& client::get_fds() { return fds; }

@@ -33,8 +33,10 @@ class Server
 
         void joinCmd(std::vector<std::string> &param, int fd);
         void privmsgCmd(std::vector<std::string>& args, int fd);
+        void modeCmd(std::vector<std::string>& args, int fd);
         void whoCmd(std::vector<std::string>& args, int fd);
         void kickCmd(std::vector<std::string> &param, int fd);
+        void nickCmd(std::vector<std::string> &param, int fd);
         void topicCmd(std::vector<std::string> &param, int fd);
         void partCmd(std::vector<std::string>& args, int fd);
         int getClientFdByNickname(const std::string& nickname);

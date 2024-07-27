@@ -47,6 +47,8 @@ class client
         static std::vector<pollfd>&     get_fds();
         static std::vector<client>&     get_clients();
         std::string                     get_host_name();
+        int                             getFd() const;
+        static void                     modify_client(int fd, const std::string& newNickname);
 
 
 };
