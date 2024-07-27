@@ -33,8 +33,7 @@ class Server
 
         void joinCmd(std::vector<std::string> &param, int fd);
         void privmsgCmd(std::vector<std::string>& args, int fd);
-        // void modeCmd(std::vector<std::string>& args, int fd);
-        void modeCmd(std::vector<std::string> &param, int fd);
+        void modeCmd(std::vector<std::string>& args, int fd);
         void whoCmd(std::vector<std::string>& args, int fd);
         void kickCmd(std::vector<std::string> &param, int fd);
         void nickCmd(std::vector<std::string> &param, int fd);
@@ -51,20 +50,6 @@ class Server
         std::string getClientMessage(int fd);
         std::string getClientNickname(int fd);
         std::string getClientHostName(int fd);
-
-        int IsModerator(Channel &ch, std::string nickname);
-        void RemoveModerator(Channel &ch, std::string nickname);
-        // bool isClientModerator(Channel &ch, int clientID);
-
-        void handlePrivateMode(Channel &channel, int fd);
-        void handlePasswordMode(Channel &channel, const std::vector<std::string> &vec, int fd, int clientId);
-        void handleOperatorMode(Channel &channel, const std::vector<std::string> &vec, int fd, int clientId);
-        void handlePublicMode(Channel &channel, int fd);
-        void handleRemovePasswordMode(Channel &channel, int fd);
-        void handleRemoveOperatorMode(Channel &channel, const std::vector<std::string> &vec, int fd, int clientId);
-        bool validateModeCommand(const std::vector<std::string> &vec, int fd);
-        bool isOperator(int fd,  Channel &channel);
-        void handleModeChange(const std::vector<std::string> &vec, int fd, Channel &channel);
 
         class IsClientWithFd {
             public:

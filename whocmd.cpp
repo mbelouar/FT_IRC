@@ -48,7 +48,6 @@ void Server::whoCmd(std::vector<std::string>& args, int fd) {
         }
 
         msg += "\n";
-        std::cout << "The message is : " << msg << std::endl;
 
         // End of list message
         msg += ":" + getClientNickname(fd) + " 366 " + getClientNickname(fd) + " " + channelName + " :End of /WHO list.\n";
