@@ -7,7 +7,7 @@
 
 void Server::setupChannel(const std::string &channelName, int fd, const std::string &password) {
     if (channels.find(channelName) == channels.end()) {
-        Channel newChannel(channelName, 0);  
+        Channel newChannel(channelName, 0);
         channels[channelName] = newChannel;
     } else {
         // Ensure not to reset the topic if the channel already exists
@@ -51,7 +51,13 @@ void Server::JoinMessage(int fd, const std::string &channelName) {
                 message2 += " ";
             }
             first = false;
-            message2 += "@" + clientIt->second.getNickname() + "!" + clientIt->second.getNickname() + "@" + getClientHostName(fd);
+            // :luna.AfterNET.Org 353 simo = #chan :simo!dd@88ABE6.25BF1D.D03F86.88C9BD.IP @bello!dd@88ABE6.25BF1D.D03F86.88C9BD.I
+            // if the client is an operator
+            if (channel.isOperator(clientIt->first)) {
+                message2 += "@" + clientIt->second.getNickname() + "!" + clientIt->second.getNickname() + "@" + getClientHostName(clientIt->first);
+            } else {
+                message2 += clientIt->second.getNickname() + "!" + clientIt->second.getNickname() + "@" + getClientHostName(clientIt->first);
+            }
         }
         message2 += "\n";
         globmsg += message2;    
@@ -88,6 +94,8 @@ void Server::joinCmd(std::vector<std::string> &param, int fd) {
     if (channelCreated) {
         // Create the channel if it doesn't exist
         setupChannel(channelName, fd, (param.size() == 2) ? param[1] : "");
+        // add the client to the operator list
+        channels[channelName].addOperator(fd);
         JoinMessage(fd, channelName);
     }
     else {

@@ -158,3 +158,15 @@ bool Channel::isClientInvited(int clientId) const{
 void Channel::removeClient(int fd) {
     clients.erase(fd);
 }
+
+void Channel::addOperator(int id) {
+    operators.push_back(id);
+}
+
+void Channel::removeOperator(int id) {
+    operators.erase(std::remove(operators.begin(), operators.end(), id), operators.end());
+}
+
+bool Channel::isOperator(int id) {
+    return std::find(operators.begin(), operators.end(), id) != operators.end();
+}

@@ -25,7 +25,7 @@ void Server::whoCmd(std::vector<std::string>& args, int fd) {
         Channel& channel = it->second;
         std::string msg;
 
-        msg = ":" + getClientHostName(fd) + " 353 " + getClientNickname(fd) + " = " + channelName + " :@";
+        msg = ":" + getClientHostName(fd) + " 353 " + getClientNickname(fd) + " = " + channelName + " :";
 
         // List all clients in the channel
         bool first = true;
@@ -36,7 +36,15 @@ void Server::whoCmd(std::vector<std::string>& args, int fd) {
                 msg += " ";
             }
             first = false;
-            msg += clientIt->second.getNickname(); // Adjust if you need more details
+            // msg += clientIt->second.getNickname(); // Adjust if you need more details
+            // check if the client is an operator
+            if (channel.isOperator(clientIt->first)) {
+                std::cout << "Operator: " << clientIt->second.getNickname() << std::endl;
+                msg += "@" + clientIt->second.getNickname();
+            } else {
+                msg += clientIt->second.getNickname();
+                std::cout << "Not Operator: " << clientIt->second.getNickname() << std::endl;
+            }
         }
 
         msg += "\n";

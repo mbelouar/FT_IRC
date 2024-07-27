@@ -53,6 +53,9 @@ class Channel {
         const std::map<int, client>             &getClientsFromChannel() const;
 
         void removeClient(int fd);
+        void addOperator(int id);
+        void removeOperator(int id);
+        bool isOperator(int id);
 
 };
 
