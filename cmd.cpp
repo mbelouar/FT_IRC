@@ -42,6 +42,8 @@ void Server::command(int fd) {
         nickCmd(res, fd);
     else if (command.compare("mode") == 0)
         modeCmd(res, fd);
+    else if (command.compare("invite") == 0)
+        inviteCmd(res, fd);
     else if (command.compare("quit") == 0)
         quitCmd(res, fd);
     else {
