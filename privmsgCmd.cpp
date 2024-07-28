@@ -57,9 +57,14 @@ void Server::privmsgCmd(std::vector<std::string>& args, int fd) {
         }
     }
     else {
-        // Recipient found as a client
-        std::cout << "Client found" << std::endl;
-        std::string msg = ":" + getClientNickname(fd) + " PRIVMSG " + recipient + " :" + message + "\n\r";
+        std::string msg;
+        if (message[0] == ':') {
+            std::cout << "Message starts with :" << std::endl;
+            msg = ":" + getClientNickname(fd) + "!" + getClientNickname(fd) + "@" + getClientHostName(fd) + " PRIVMSG " + recipient + " " + message + "\n\r";
+        } else {
+            std::cout << "Message does not start with :" << std::endl;
+            msg = ":" + getClientNickname(fd) + "!" + getClientNickname(fd) + "@" + getClientHostName(fd) + " PRIVMSG " + recipient + " :" + message + "\n\r";
+        }
         sendMessage(recipientClient->get_client_pfd().fd, msg);
     }
 }
