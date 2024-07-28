@@ -102,17 +102,20 @@ bool client::set_authenticated(std::vector<client> clients)
               {
                 std::string nickname = lines[i].substr(5, lines[i].size());
                 
-    int j = 0;
+  
     std::string tmp_nickname = nickname;
                  
-                while (check_nickname(nickname, clients) == false)
+                if (check_nickname(nickname, clients) == false)
                 {
-                    nickname = nickname + "_";
-                    j++;
-
+                    std::string message = "433 :nickname is already in use\r\n";
+                    sendMessage(this->client_pfd.fd, message);
+                    return (false);
                 }
+
                
                 this->set_nickname(nickname);
+                
+
                 std::cout << "the new nickname : " << this->nickname << std::endl;
                
 
