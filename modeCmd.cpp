@@ -6,8 +6,9 @@
 #include "utils.hpp"
 
 void Server::modeCmd(std::vector<std::string> &param, int fd) {
-    if (param.size() < 2) {
-        std::string message = ":" + getClientHostName(fd) + " 461 " + getClientNickname(fd) + " MODE :Not enough parameters\n";
+    std::cout << "size: " << param.size() << std::endl;
+    if (param.size() == 1) {
+        std::string message = ":" + getClientHostName(fd) + " 324 " + getClientNickname(fd) + " " + param[0] + " +tn\r\n";
         sendMessage(fd, message);
         return;
     }
