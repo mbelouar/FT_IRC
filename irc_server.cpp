@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
                                     // std::cout << client::get_clients()[l].get_client_pfd().fd << " is not authenticated" << std::endl;
                                     if (client::get_clients()[l].set_authenticated() == true)
                                     {
-                                        std::cout << "now is authenticated" << std::endl;
+                                        std::cout << "Now is authenticated" << std::endl;
                                         client::get_clients()[l].clear_massage();
                                         std::cout << client::get_clients()[l].get_message() << std::endl;
                                     }

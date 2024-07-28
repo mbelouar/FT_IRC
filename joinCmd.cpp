@@ -87,6 +87,7 @@ void Server::joinCmd(std::vector<std::string> &param, int fd) {
     }
 
     std::string channelName = param[0];
+    std::string password = (param.size() > 1) ? param[1] : "";
 
     std::map<std::string, Channel>::iterator it = channels.find(channelName);
     bool channelCreated = (it == channels.end());
@@ -113,6 +114,20 @@ void Server::joinCmd(std::vector<std::string> &param, int fd) {
                 sendMessage(fd, message);
                 return;
             }
+        }
+
+        // Check if the channel has a password and if the provided password is correct
+        if (channel.getChPassword() != password) {
+            std::string message = ":" + getNameId(fd) + " 475 " + channelName + " :Cannot join channel (+k) - incorrect key\n";
+            sendMessage(fd, message);
+            return;
+        }
+
+        // Check if the channel has a user limit and if the limit is reached
+        if (channel.getChannelLimit() > 0 && channel.getClientsFromChannel().size() >= static_cast<size_t>(channel.getChannelLimit())) {
+            std::string message = ":" + getNameId(fd) + " 471 " + channelName + " :Cannot join channel (+l) - channel is full\n";
+            sendMessage(fd, message);
+            return;
         }
 
         // Add the client to the channel

@@ -17,6 +17,7 @@ class Channel {
         std::map<int, client> inviteList;
         int                   channelType;
         int                   hasPassword;
+        int                   channeLimit;
 
     public:
         Channel();
@@ -35,6 +36,7 @@ class Channel {
         void setChannelType(int channelType);
         void setHasPassword(int hasPassword);
         void setInvitedList(int id, client &c);
+        void setChannelLimit(int limit);
 
         // getters :
         std::string                             getName();
@@ -43,6 +45,7 @@ class Channel {
         std::string                             getChPassword();
         std::map<int, client>::const_iterator   beginClientIter() const;
         std::map<int, client>::const_iterator   endClientIter() const;
+        int                                     getChannelLimit() const;
         int                                     getChannelType();
         int                                     getClientID(const std::string &nickname) const;
         int                                     isClientInChannel(int fd);

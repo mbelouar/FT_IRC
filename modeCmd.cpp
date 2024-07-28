@@ -52,7 +52,7 @@ void Server::modeCmd(std::vector<std::string> &param, int fd) {
 
     //print param
     for (size_t i = 0; i < param.size(); i++) {
-        std::cout << "param: " << param[i] << std::endl;
+        std::cout << "param[" << i << "]: " << param[i] << std::endl;
     }
 
     // Process mode changes
@@ -140,16 +140,39 @@ void Server::modeCmd(std::vector<std::string> &param, int fd) {
                 break;
             }
             case 'k': {
-                if (addingMode && !targets.empty()) {
+                if (addingMode && targets.empty()) {
+                    std::string message = ":" + getClientHostName(fd) + " 461 " + getClientNickname(fd) + " MODE :Not enough parameters\n";
+                    sendMessage(fd, message);
+                    return;
+                } else if (addingMode) {
                     channel.setChPassword(targets[0]);
-                    channel.setHasPassword(1);
-                    sendMessage(fd, ":" + getClientNickname(fd) + " MODE " + channelName + " +k " + targets[0] + "\n");
+                    std::string message = ":" + getClientNickname(fd) + "!" + getClientNickname(fd) + "@" + getClientHostName(fd) + " MODE " + channelName + " +k " + targets[0] + "\r\n";
+                    sendMessage(fd, message);
+
+                    // notify other clients
+                    std::map<int, client>::const_iterator clientIt;
+                    const std::map<int, client>& clients = channel.getClientsFromChannel();
+                    for (clientIt = clients.begin(); clientIt != clients.end(); ++clientIt) {
+                        if (clientIt->first != fd) {
+                            std::string message = ":" + getClientNickname(fd) + "!" + getClientNickname(fd) + "@" + getClientHostName(fd) + " MODE " + channelName + " +k " + targets[0] + "\r\n";
+                            sendMessage(clientIt->first, message);
+                        }
+                    }
                 } else {
                     channel.setChPassword("");
-                    channel.setHasPassword(0);
-                    sendMessage(fd, ":" + getClientNickname(fd) + " MODE " + channelName + " -k\n");
+                    std::string message = ":" + getClientNickname(fd) + "!" + getClientNickname(fd) + "@" + getClientHostName(fd) + " MODE " + channelName + " -k\r\n";
+                    sendMessage(fd, message);
+
+                    // notify other clients
+                    std::map<int, client>::const_iterator clientIt;
+                    const std::map<int, client>& clients = channel.getClientsFromChannel();
+                    for (clientIt = clients.begin(); clientIt != clients.end(); ++clientIt) {
+                        if (clientIt->first != fd) {
+                            std::string message = ":" + getClientNickname(fd) + "!" + getClientNickname(fd) + "@" + getClientHostName(fd) + " MODE " + channelName + " -k\r\n";
+                            sendMessage(clientIt->first, message);
+                        }
+                    }
                 }
-                break;
             }
             case 'o': {
                 for (std::vector<std::string>::size_type j = 0; j < targets.size(); ++j) {
@@ -194,6 +217,44 @@ void Server::modeCmd(std::vector<std::string> &param, int fd) {
                 //     // print operator's nickname
                 //     std::cout << ">> Operator: " << getClientNickname(ops[i]) << std::endl;
                 // }
+                break;
+            }
+            case 'l': {
+                if (addingMode) {
+                    if (targets.empty()) {
+                        std::string message = ":" + getClientHostName(fd) + " 461 " + getClientNickname(fd) + " MODE :Not enough parameters\n";
+                        sendMessage(fd, message);
+                        return;
+                    }
+                    int limit = std::stoi(targets[0]);
+                    channel.setChannelLimit(limit);
+                    std::string message = ":" + getClientNickname(fd) + "!" + getClientNickname(fd) + "@" + getClientHostName(fd) + " MODE " + channelName + " +l " + targets[0] + "\r\n";
+                    sendMessage(fd, message);
+
+                    // notify other clients
+                    std::map<int, client>::const_iterator clientIt;
+                    const std::map<int, client>& clients = channel.getClientsFromChannel();
+                    for (clientIt = clients.begin(); clientIt != clients.end(); ++clientIt) {
+                        if (clientIt->first != fd) {
+                            std::string message = ":" + getClientNickname(fd) + "!" + getClientNickname(fd) + "@" + getClientHostName(fd) + " MODE " + channelName + " +l " + targets[0] + "\r\n";
+                            sendMessage(clientIt->first, message);
+                        }
+                    }
+                } else {
+                    channel.setChannelLimit(0);
+                    std::string message = ":" + getClientNickname(fd) + "!" + getClientNickname(fd) + "@" + getClientHostName(fd) + " MODE " + channelName + " -l\r\n";
+                    sendMessage(fd, message);
+
+                    // notify other clients
+                    std::map<int, client>::const_iterator clientIt;
+                    const std::map<int, client>& clients = channel.getClientsFromChannel();
+                    for (clientIt = clients.begin(); clientIt != clients.end(); ++clientIt) {
+                        if (clientIt->first != fd) {
+                            std::string message = ":" + getClientNickname(fd) + "!" + getClientNickname(fd) + "@" + getClientHostName(fd) + " MODE " + channelName + " -l\r\n";
+                            sendMessage(clientIt->first, message);
+                        }
+                    }
+                }
                 break;
             }
             default: {

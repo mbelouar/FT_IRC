@@ -170,3 +170,10 @@ bool Channel::isOperator(int id) {
     return std::find(operators.begin(), operators.end(), id) != operators.end();
 }
 
+int Channel::getChannelLimit() const {
+    return channeLimit;
+}
+
+void Channel::setChannelLimit(int limit) {
+    channeLimit = limit;
+}
