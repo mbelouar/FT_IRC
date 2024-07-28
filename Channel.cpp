@@ -149,7 +149,6 @@ size_t Channel::getClientNb() const {
     return clients.size();
 }
 
-
 bool Channel::isClientInvited(int clientId) const{
     bool isInvited = (inviteList.count(clientId) > 0);
     return isInvited;
@@ -170,3 +169,4 @@ void Channel::removeOperator(int id) {
 bool Channel::isOperator(int id) {
     return std::find(operators.begin(), operators.end(), id) != operators.end();
 }
+
