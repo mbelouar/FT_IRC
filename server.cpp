@@ -97,7 +97,15 @@ std::string Server::getNameId(int fd) {
             return it->getNickname();
         }
     }
-    std::string message = ":" + std::to_string(fd) + " 401 * :No such nick/channel\n";  
-    sendMessage(fd, message);
     return "ERROR"; 
+}
+
+int Server::getClientFdByNickname(const std::string& nickname) {
+    std::vector<client>& clients = client::get_clients();
+    for (std::vector<client>::iterator it = clients.begin(); it != clients.end(); ++it) {
+        if (it->getNickname() == nickname) {
+            return it->get_client_pfd().fd;
+        }
+    }
+    return -1;  // Return -1 if no client with the given nickname is found
 }

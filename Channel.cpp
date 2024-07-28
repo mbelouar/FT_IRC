@@ -74,9 +74,9 @@ void Channel::setHasPassword(int hasPsd) {
 
 
 
-void Channel::setInvitedList(int id, client &c){
-    inviteList[id] = c;
-}
+// void Channel::setInvitedList(int id, client &c){
+//     inviteList[id] = c;
+// }
 std::string Channel::getName() {
     return name;
 }
@@ -108,10 +108,9 @@ int Channel::getHasPassword() const{
 }
 
 
-std::map<int, client> Channel::getInvitedList() const{
-    return inviteList;
-
-}
+// std::map<int, client> Channel::getInvitedList() const{
+//     return inviteList;
+// }
 
 std::map<int, client>::const_iterator Channel::beginClientIter() const {
     return clients.begin();
@@ -149,10 +148,10 @@ size_t Channel::getClientNb() const {
     return clients.size();
 }
 
-bool Channel::isClientInvited(int clientId) const{
-    bool isInvited = (inviteList.count(clientId) > 0);
-    return isInvited;
-}
+// bool Channel::isClientInvited(int clientId) const{
+//     bool isInvited = (inviteList.count(clientId) > 0);
+//     return isInvited;
+// }
 
 void Channel::removeClient(int fd) {
     clients.erase(fd);
@@ -176,4 +175,12 @@ int Channel::getChannelLimit() const {
 
 void Channel::setChannelLimit(int limit) {
     channeLimit = limit;
+}
+
+void Channel::addInvite(int fd) {
+    inviteList.push_back(fd);
+}
+
+bool Channel::isClientInvited(int fd) const {
+    return std::find(inviteList.begin(), inviteList.end(), fd) != inviteList.end();
 }

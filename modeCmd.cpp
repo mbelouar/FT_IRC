@@ -211,13 +211,6 @@ void Server::modeCmd(std::vector<std::string> &param, int fd) {
                         }
                     }
                 }
-                // std::cout << "Operator mode changed for client " << targets[0] << std::endl;
-                // //print operators
-                // std::vector<int> ops = channel.getOperators();
-                // for (size_t i = 0; i < ops.size(); i++) {
-                //     // print operator's nickname
-                //     std::cout << ">> Operator: " << getClientNickname(ops[i]) << std::endl;
-                // }
                 break;
             }
             case 'l': {

@@ -14,7 +14,8 @@ class Channel {
         std::string           chPassword;
         std::vector<int>      operators;
         std::map<int, client> clients;
-        std::map<int, client> inviteList;
+        // std::map<int, client> inviteList;
+        std::vector<int>      inviteList;
         int                   channelType;
         int                   hasPassword;
         int                   channeLimit;
@@ -35,7 +36,7 @@ class Channel {
         void setChPassword(std::string channelPassword);
         void setChannelType(int channelType);
         void setHasPassword(int hasPassword);
-        void setInvitedList(int id, client &c);
+        // void setInvitedList(int id, client &c);
         void setChannelLimit(int limit);
 
         // getters :
@@ -51,7 +52,7 @@ class Channel {
         int                                     isClientInChannel(int fd);
         int                                     getHasPassword() const;
         size_t                                  getClientNb() const;
-        std::map<int, client>                   getInvitedList() const;
+        // std::map<int, client>                   getInvitedList() const;
         bool                                    isClientInvited(int clientId) const;
         const std::map<int, client>             &getClientsFromChannel() const;
 
@@ -59,6 +60,9 @@ class Channel {
         void addOperator(int id);
         void removeOperator(int id);
         bool isOperator(int id);
+        void addInvite(int fd);
+        bool isInvited(int fd);
+
 
 };
 
