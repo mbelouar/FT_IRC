@@ -36,7 +36,7 @@ class client
         void                            set_nickname(std::string nickname);
         void                            set_username(std::string username);
         void                            set_realname(std::string realname);
-        bool                            set_authenticated();
+        bool                            set_authenticated(std::vector<client>);
         void                            set_registered(bool is_registered);
         void                            set_client_pfd(pollfd client_pfd);
         void                            set_massage_for_auth(std::string massage);
@@ -49,6 +49,7 @@ class client
         std::string                     get_host_name();
         int                             getFd() const;
         static void                     modify_client(int fd, const std::string& newNickname);
+        bool                            check_nickname(std::string nickname, std::vector<client>& clients);
 
 
 };

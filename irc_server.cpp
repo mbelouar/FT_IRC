@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
                         {
                             if (client::get_clients()[l].get_client_pfd().fd == client::get_fds()[i].fd)
                             {
-                                if (client::get_clients()[l].set_authenticated() == true)
+                                if (client::get_clients()[l].set_authenticated(client::get_clients()) == true)
                                 {
                                     client::get_clients()[l].set_massage(buffer);
                                     // print host name
@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
                                 {
                                     client::get_clients()[l].set_massage_for_auth(buffer);
                                     // std::cout << client::get_clients()[l].get_client_pfd().fd << " is not authenticated" << std::endl;
-                                    if (client::get_clients()[l].set_authenticated() == true)
+                                    if (client::get_clients()[l].set_authenticated(client::get_clients()) == true)
                                     {
                                         std::cout << "Now is authenticated" << std::endl;
                                         client::get_clients()[l].clear_massage();

@@ -1,4 +1,5 @@
 #include "client.hpp"
+#include "utils.hpp"
 
 std::vector<pollfd> client::fds;
 std::vector<client> client::clients;
@@ -69,7 +70,23 @@ std::vector<std::string> buffer_to_line(std::string buffer, std::string siparato
     return lines;
 }
 
-bool client::set_authenticated()
+ bool client::check_nickname(std::string nickname, std::vector<client>& clients)
+{
+    std::vector<client>::iterator it = clients.begin();
+    while (it != clients.end())
+    {
+        // std::cout << "nickname : " << it->getNickname() << std::endl;
+        if (it->getNickname() == nickname)
+        {
+            
+            return (false);
+        }
+        it++;
+    }
+    return (true);
+}
+
+bool client::set_authenticated(std::vector<client> clients)
 {
     std::string line;
     if (this->is_authenticated == true)
@@ -79,15 +96,26 @@ bool client::set_authenticated()
     else { 
         std::vector<std::string> lines = buffer_to_line(this->massage, "\r\n");
 
-        // std::cout << "--------------- not authonticatef --------------------" << std::endl;
-        // std::cout << "the size of lines : " << lines.size() << std::endl;
         for (unsigned int i = 0; i < lines.size(); i++)
         {
-        //    std::cout << lines[i] << std::endl;
               if (lines[i].find("NICK") != std::string::npos)
               {
                 std::string nickname = lines[i].substr(5, lines[i].size());
+                
+    int j = 0;
+    std::string tmp_nickname = nickname;
+                 
+                while (check_nickname(nickname, clients) == false)
+                {
+                    nickname = nickname + "_";
+                    j++;
+
+                }
+               
                 this->set_nickname(nickname);
+                std::cout << "the new nickname : " << this->nickname << std::endl;
+               
+
               }
                 if (lines[i].find("USER") != std::string::npos)
                 {
