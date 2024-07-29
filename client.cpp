@@ -93,9 +93,25 @@ bool client::set_authenticated(std::vector<client> clients)
     {
         return (true);
     }
-    else { 
-        std::vector<std::string> lines = buffer_to_line(this->massage, "\r\n");
+    else {
+    std::vector<std::string> lines;
+      if (this->massage.find("\r\n") != std::string::npos)
+      {
+        lines = buffer_to_line(this->massage, "\r\n");
+      }
 
+        if (this->massage.find("\r") != std::string::npos && this->massage.find("\r\n") == std::string::npos )
+        {
+            lines = buffer_to_line(this->massage, "\n");
+        }
+
+
+
+
+    
+
+        std::cout << "the size of the lines : " << lines.size() << std::endl;
+       
         for (unsigned int i = 0; i < lines.size(); i++)
         {
               if (lines[i].find("NICK") != std::string::npos)
@@ -103,9 +119,9 @@ bool client::set_authenticated(std::vector<client> clients)
                 std::string nickname = lines[i].substr(5, lines[i].size());
                 
   
-    std::string tmp_nickname = nickname;
+                std::string tmp_nickname = nickname;
                  
-                if (check_nickname(nickname, clients) == false)
+                if (check_nickname(nickname, clients) == false) 
                 {
                     std::string message = "433 :nickname is already in use\r\n";
                     sendMessage(this->client_pfd.fd, message);
@@ -138,10 +154,7 @@ bool client::set_authenticated(std::vector<client> clients)
                             size_t found3 = tmp_realname.find(" ");
                             if (found3 != std::string::npos) {
                                 std::string realname = tmp_realname.substr(0, found3);
-                                // std::cout << "realname : " << realname << std::endl;
                                 this->hostname = realname;
-
-                                // std::cout << "hostname : " << this->hostname << std::endl;
 
                             }
                         }
@@ -155,6 +168,7 @@ bool client::set_authenticated(std::vector<client> clients)
                     
                 }
         }
+
                if ((this->nickname.size() > 0) && (this->username.size() > 0) && (this->password == this->sabmit_password))
                 {
                     this->is_authenticated = true;
