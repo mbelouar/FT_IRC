@@ -75,8 +75,8 @@ std::vector<std::string> buffer_to_line(std::string buffer, std::string siparato
     std::vector<client>::iterator it = clients.begin();
     while (it != clients.end())
     {
-        // std::cout << "nickname : " << it->getNickname() << std::endl;
-        if (it->getNickname() == nickname)
+        
+        if (it->getNickname() == nickname && it->is_authenticated == true)
         {
             
             return (false);
@@ -95,47 +95,32 @@ bool client::set_authenticated(std::vector<client> clients)
     }
     else {
     std::vector<std::string> lines;
-      if (this->massage.find("\r\n") != std::string::npos)
-      {
-        lines = buffer_to_line(this->massage, "\r\n");
-      }
+        if (this->massage.find("\r\n") != std::string::npos)
+        {
+            lines = buffer_to_line(this->massage, "\r\n");
+        }
 
         if (this->massage.find("\r") != std::string::npos && this->massage.find("\r\n") == std::string::npos )
         {
             lines = buffer_to_line(this->massage, "\n");
         }
-
-
-
-
-    
-
-        std::cout << "the size of the lines : " << lines.size() << std::endl;
        
         for (unsigned int i = 0; i < lines.size(); i++)
         {
-              if (lines[i].find("NICK") != std::string::npos)
-              {
-                std::string nickname = lines[i].substr(5, lines[i].size());
-                
-  
+            if (lines[i].find("NICK") != std::string::npos)
+            {
+                std::string nickname = lines[i].substr(5, lines[i].size());   
+
                 std::string tmp_nickname = nickname;
-                 
+                    
                 if (check_nickname(nickname, clients) == false) 
                 {
                     std::string message = "433 :nickname is already in use\r\n";
                     sendMessage(this->client_pfd.fd, message);
                     return (false);
-                }
-
-               
-                this->set_nickname(nickname);
-                
-
-                std::cout << "the new nickname : " << this->nickname << std::endl;
-               
-
-              }
+                } 
+                this->set_nickname(nickname);          
+            }
                 if (lines[i].find("USER") != std::string::npos)
                 {
                     std::string username = lines[i].substr(5, lines[i].size());
@@ -155,20 +140,23 @@ bool client::set_authenticated(std::vector<client> clients)
                             if (found3 != std::string::npos) {
                                 std::string realname = tmp_realname.substr(0, found3);
                                 this->hostname = realname;
-
                             }
                         }
                     }
-                    
                 }
 
                 if (lines[i].find("PASS") != std::string::npos)
                 {
-                    this->sabmit_password = lines[i].substr(5, lines[i].size());
-                    
+                    this->sabmit_password = lines[i].substr(5, lines[i].size());              
                 }
         }
-
+                // check if the password is incorrect
+                if ((this->sabmit_password.size() > 0 ) && (lines.size() > 3) && (this->password != this->sabmit_password))
+                {
+                    std::string message = "464 :password incorrect\r\n";
+                    sendMessage(this->client_pfd.fd, message);
+                    return (false);
+                }
                if ((this->nickname.size() > 0) && (this->username.size() > 0) && (this->password == this->sabmit_password))
                 {
                     this->is_authenticated = true;

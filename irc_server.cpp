@@ -5,7 +5,8 @@
 
 int main(int argc, char *argv[])
 {
-    if (argc != 3)
+    // check if the size of the last arg is not equal to 0
+    if (argc != 3 || strlen(argv[2]) == 0 || strlen(argv[1]) == 0)
     {
         std::cout << "Usage: ./irc_server <port> <password>" << std::endl;
         return (1);
