@@ -21,22 +21,22 @@ make
 ```bash
 
 # Join a channel
-/join <#channelName>
+/join #<channelName>
 
 # Send a private message to a client
 /privmsg <userName> <message>
 
 # Send a private message in a channel
-/privmsg <#channelName> <message>
+/privmsg #<channelName> <message>
 
 # Leave a channel
-/part <#channelName>
+/part #<channelName>
 
 # Kick a user from a channel 
 /kick <userName> :reason or not
 
 # Display or set a channel's topic 
-/topic <#channelName> :newTopic
+/topic #<channelName> :newTopic
 
 # Modify channel modes (i, t, k, o, l) 
 /mode (+/-)i : Set/remove Invite-only channe
@@ -49,10 +49,10 @@ make
 /quit
 
 # Invite a client to a channel
-/invite <userName> <#channelName>
+/invite <userName> #<channelName>
 
 # Who is connected on a channel
-/who <#channelName>
+/who #<channelName>
 
 # Change the nickname of a client
 /nick <New_Nickname>
